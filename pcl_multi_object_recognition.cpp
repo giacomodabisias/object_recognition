@@ -10,12 +10,15 @@
 #include "Semaphore.h"
 #include <thread>
 
-void FindObject (pcl::PointCloud<PointType>::Ptr model, pcl::PointCloud<PointType>::Ptr scene, Semaphore& s, std::vector<ClusterType>& found_models) {
+void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const  int id) {
+
   pcl::PointCloud<PointType>::Ptr model_keypoints (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<PointType>::Ptr complete_scene (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<PointType>::Ptr scene_keypoints (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<NormalType>::Ptr model_normals (new pcl::PointCloud<NormalType> ());
   pcl::PointCloud<NormalType>::Ptr scene_normals (new pcl::PointCloud<NormalType> ());
+  pcl::PointCloud<PointType>::Ptr scene (new pcl::PointCloud<PointType> ());
+
 
   NormalEstimator norm;
   ClusterType cluster;
@@ -78,7 +81,7 @@ void FindObject (pcl::PointCloud<PointType>::Ptr model, pcl::PointCloud<PointTyp
 
   //Start the main object recognition loop
   while (!s.ToStop()){ 
-
+    copyPointCloud (*original_scene, *scene);
     init = std::clock();
 
     //Delete the main plane to reduce the number of points in the scene point cloud
@@ -216,7 +219,7 @@ void FindObject (pcl::PointCloud<PointType>::Ptr model, pcl::PointCloud<PointTyp
     }
     std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
     if(std::get < 0 > (cluster).size () > 0)
-      found_models.push_back(cluster);
+      found_models[id] = cluster;
     s.Notify2main();
     s.Wait4main();
   }
@@ -231,7 +234,7 @@ main (int argc, char** argv)
   ParseCommandLine (argc, argv);
   pcl::PointCloud<PointType>::Ptr scene (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<PointType>::Ptr complete_scene (new pcl::PointCloud<PointType> ());
-  std::vector<ClusterType> found_models;
+
 
   //Load the input model (n models but for now only one is used)
   std::vector < pcl::PointCloud < PointType > ::Ptr > model_list = ReadModels (argv);
@@ -253,6 +256,8 @@ main (int argc, char** argv)
   Visualizer visualizer;
   Semaphore s(num_threads);
   std::vector<std::thread> thread_list(num_threads);
+  std::vector<ClusterType> found_models(num_threads);
+
 
   //read first frame and launch the threads
   if(!openni_streamer->HasDataLeft())
@@ -261,7 +266,8 @@ main (int argc, char** argv)
   copyPointCloud (*scene, *complete_scene);
 
   for(int i = 0; i < num_threads; ++i)
-      thread_list[i] = std::thread(FindObject, model_list[i], scene, std::ref(s), std::ref(found_models));
+      thread_list[i] = std::thread(FindObject, model_list[i], std::ref(scene), std::ref(s), std::ref(found_models), i);
+    
 
   //start the main detection loop
   // 1- wait for the threads to find all the objects
@@ -274,12 +280,11 @@ main (int argc, char** argv)
     //Visualizing the model, scene and the estimated model position
     SetViewPoint (complete_scene);
     visualizer.Visualize (model_list, found_models, complete_scene);
-    found_models.clear();
+    
     //Grab a frame and create the pointcloud checking in case if the oni stream is finished
     if(!openni_streamer->HasDataLeft())
       break;
     scene = openni_streamer->GetCloud();
-    //Copy the complete scene before filtering for visualization purpose
     copyPointCloud (*scene, *complete_scene);
     //wake up the threads
     s.Notify2threads();

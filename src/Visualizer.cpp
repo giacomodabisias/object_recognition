@@ -13,7 +13,7 @@ Visualizer::Visualizer () : iter_ (0), clean_ (true), r(255), g(0)
 }
 
 void
-Visualizer::Visualize ( std::vector<pcl::PointCloud<PointType>::Ptr> model_list,  std::vector<ClusterType> found_models,  pcl::PointCloud<PointType>::Ptr scene)
+Visualizer::Visualize ( const std::vector<pcl::PointCloud<PointType>::Ptr> model_list, const std::vector<ClusterType> found_models, const pcl::PointCloud<PointType>::Ptr scene)
 {
 
   if (!clean_)
