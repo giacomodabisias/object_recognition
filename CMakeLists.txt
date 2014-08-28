@@ -5,7 +5,7 @@ Project (pcl_multi_object_recognition CXX)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
 
 set(INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(INCLUDE_PATH_GRABBER ${CMAKE_CURRENT_SOURCE_DIR}/include/grabber)
+set(GRABBER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include/grabber)
 set(SOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 #######find Openmp
@@ -111,10 +111,15 @@ endif (LIBUSB_1_LIBRARIES AND LIBUSB_1_INCLUDE_DIRS)
   )
 #######
 
-
 include_directories(${INCLUDE_PATH})
-include_directories(${INCLUDE_PATH_GRABBER})
+include_directories(${GRABBER_PATH})
 
-add_executable (pcl_multi_object_recognition pcl_multi_object_recognition.cpp ${SOURCE_PATH}/utils.cpp  ${SOURCE_PATH}/Visualizer.cpp  ${SOURCE_PATH}/Cluster.cpp ${SOURCE_PATH}/Keypoints.cpp ${SOURCE_PATH}/Sampling.cpp ${SOURCE_PATH}/Icp.cpp  ${SOURCE_PATH}/Ppfe.cpp ${SOURCE_PATH}/OpenniStreamer.cpp ${SOURCE_PATH}/Error.cpp ${SOURCE_PATH}/define.cpp ${SOURCE_PATH}/help.cpp ${SOURCE_PATH}/utils.cpp ${INCLUDE_PATH_GRABBER}/registration.cpp)
+
+FILE(GLOB_RECURSE SRCFILES ${SOURCE_PATH}/*.cpp )
+FILE(GLOB_RECURSE SRCFILES_GRABBER ${GRABBER_PATH}/*.cpp )
+
+message(${SRCFILES})
+
+add_executable (pcl_multi_object_recognition pcl_multi_object_recognition.cpp ${SRCFILES} ${SRCFILES_GRABBER})
 
 target_link_libraries( pcl_multi_object_recognition  ${OPENNI_LIBRARY} ${PCL_LIBRARIES} ${Freenect_LIBRARY} )
