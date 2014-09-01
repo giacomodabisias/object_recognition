@@ -67,7 +67,6 @@ class KeyDes
       }
 
       pcl::KdTreeFLANN<T> match_search;
-      //std::cout <<"calculated " << model_descriptors_->size() << " for the model and " << scene_descriptors_->size() << " for the scene" <<std::endl;
 
       //  Find Model-Scene Correspondences with KdTree
       std::cout << "calculating correspondences " << std::endl;
@@ -91,13 +90,7 @@ class KeyDes
           }
         }
       }
-      /*
-       pcl::registration::CorrespondenceRejectorSampleConsensus<PointType> rejector;
-       rejector.setInputSource(model_);
-       rejector.setInputTarget(scene_);
-       rejector.setInputCorrespondences(model_scene_corrs_);
-       rejector.getCorrespondences(*model_scene_corrs_);
-       */
+
       std::cout << "\tFound " << model_scene_corrs->size () << " correspondences " << std::endl;
       return (model_scene_corrs);
 

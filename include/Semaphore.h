@@ -11,7 +11,6 @@ private:
     int max_count_;
     bool stop_;
 
-
 public:
     Semaphore(int max_count): count_(0), max_count_(max_count), stop_(false){}
 

@@ -6,10 +6,7 @@
 #include <iostream>
 #include <pcl/io/pcd_io.h>
 #include <ctime>
-
-
-
-
+#include <sstream>
 
 //Returns the frobenious norm of the input matrix
 double 
@@ -33,7 +30,7 @@ SetViewPoint (pcl::PointCloud<PointType>::Ptr cloud)
 
 //Load the input models and returns a list of point clouds
 std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>
-ReadModels (char** argv);
+ReadModels (char** argv, std::vector<float>& filters);
 
 //Prints the transformation matrix and traslation vector
 void

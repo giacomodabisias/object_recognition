@@ -4,11 +4,8 @@
 
 Visualizer::Visualizer () : iter_ (0), clean_ (true), r(255), g(0)
 {
-  //viewer_.registerKeyboardCallback (KeyboardEventOccurred);
-  if(use_generalized_icp)
-    icp_ = new GeneralizedICPRegistration();
-  else
-    icp_ = new ICPRegistration();
+  viewer_.registerKeyboardCallback (KeyboardEventOccurred);
+  
 
 }
 
@@ -36,11 +33,7 @@ Visualizer::Visualize ( const std::vector<pcl::PointCloud<PointType>::Ptr> model
     clean_ = false;
     pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
     pcl::transformPointCloud (*(model_list[i]), *rotated_model, (std::get < 0 > (found_models[i]))[0]);
-    if (use_icp && scene->points.size() > 20)
-    {
-      icp_->Align (rotated_model, scene);
-      //pcl::transformPointCloud (*rotated_model, *rotated_model, transformation);
-    }
+    
     SetViewPoint (rotated_model);
 
     ss_cloud_ << "instance" << i;

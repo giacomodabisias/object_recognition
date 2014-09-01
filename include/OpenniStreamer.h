@@ -11,9 +11,9 @@
 class OpenniStreamer
 {
   public:
-    openni::Device device_;        // Software object for the physical device i.e.  
-    openni::VideoStream ir_;       // IR VideoStream Class Object
-    openni::VideoStream color_;    // Color VideoStream Class Object
+    openni::Device device_;         
+    openni::VideoStream ir_;      
+    openni::VideoStream color_;    
     openni::Status rc_;
     boost::signals2::connection c_;
     pcl::ONIGrabber* grabber_;
@@ -30,16 +30,9 @@ class OpenniStreamer
 
     pcl::PassThrough<pcl::PointXYZRGB> pass_;
     
-
     OpenniStreamer ();
 
     OpenniStreamer(std::string filename);
-
-    //void Cloud_cb (const CloudConstPtr& cloud);
-
-    //void Image_cb (const boost::shared_ptr<openni_wrapper::Image> &image);
-
-    //void Depth_cb (const boost::shared_ptr<openni_wrapper::DepthImage> &depth_image);
 
     pcl::PointCloud<PointType>::Ptr GetCloud();
 

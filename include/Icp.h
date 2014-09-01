@@ -16,7 +16,6 @@ public:
     virtual void Align(pcl::PointCloud<PointType>::Ptr cloud_source, pcl::PointCloud<PointType>::Ptr cloud_target) = 0;
 };
 
-
 class ICPRegistration : public ICP
 {
   public:

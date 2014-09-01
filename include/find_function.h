@@ -11,7 +11,9 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 #include "Semaphore.h"
 #include <thread>
+#include "Icp.h"
 
-void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const  int id);
+
+void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const  int id, const float filter);
 
 #endif

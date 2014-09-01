@@ -1,6 +1,6 @@
 #include "find_function.h"
 
-void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const  int id) {
+void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const int id, const float filter_intensity) {
 
   pcl::PointCloud<PointType>::Ptr model_keypoints (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<PointType>::Ptr complete_scene (new pcl::PointCloud<PointType> ());
@@ -23,15 +23,16 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   Ppfe *ppfe_estimator;
   Hough * hough;
   GCG * gcg;
+  ICP *icp;
 
-  //Add the model to the filter so that the scene can be filtered using the model mean color
+  // Add the model to the filter so that the scene can be filtered using the model mean color
   if (to_filter)
   {
-    filter = new ColorSampling();
+    filter = new ColorSampling(filter_intensity);
     filter->AddCloud (*model);
   }
 
-  //Remove outliers to clean the scene from sparse points
+  // Remove outliers to clean the scene from sparse points
   if (remove_outliers)
   {
     sor = new pcl::StatisticalOutlierRemoval < PointType >();
@@ -40,7 +41,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   }
 
   std::cout << "calculating model normals... " << std::endl;
-  //Calculate the model keypoints using the specified method
+  // Calculate the model keypoints using the specified method
   if (ppfe)
   {       
     ppfe_estimator = new Ppfe(model);
@@ -69,35 +70,39 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       gcg = new GCG();
   }
 
-  //Start the main object recognition loop
+  if(use_generalized_icp)
+    icp = new GeneralizedICPRegistration();
+  else
+    icp = new ICPRegistration();
+
+  // Start the main object recognition loop
   while (!s.ToStop()){ 
     copyPointCloud (*original_scene, *scene);
     init = std::clock();
 
-    //Delete the main plane to reduce the number of points in the scene point cloud
+    // Delete the main plane to reduce the number of points in the scene point cloud
     if (segment)
       scene = FindAndSubtractPlane (scene, segmentation_threshold, segmentation_iterations);
-    //Filter the scene using the mean model color calculated before
-
+    // Filter the scene using the mean model color calculated before
     if (to_filter)
     {
       filter->FilterPointCloud (*scene, *scene);
     }
-    //remove outliers from the scene to avoid sparse points
+    // Remove outliers from the scene to avoid sparse points
     if (remove_outliers)
     {
       sor->setInputCloud (scene);
       sor->filter (*scene);
     }
 
-    //  Compute scene normals
+    // Compute scene normals
     std::cout << "calculating scene normals... " << std::endl;
     scene_normals = norm.GetNormals (scene);
 
-    //Calculate the scene keypoints using the specified method
+    // Calculate the scene keypoints using the specified method
     if (ppfe)
     {
-      //PPFE
+      // PPFE
       cluster = ppfe_estimator->GetCluster (scene);
       scene_keypoints = ppfe_estimator->GetSceneKeypoints ();
       show_correspondences = false;
@@ -106,7 +111,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
     {
       if (narf)
       {
-        //NARF
+        // NARF
         std::cout << "finding narf keypoints..." << std::endl;
         narf_estimator = new Narf();
         narf_estimator->GetKeypoints (scene, scene_keypoints);
@@ -114,7 +119,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       }
       else if (sift)
       {
-        //SIFT
+        // SIFT
         std::cout << "finding sift keypoints..." << std::endl;
         sift_estimator = new Sift();
         sift_estimator->GetKeypoints (scene, scene_keypoints);
@@ -122,7 +127,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       }
       else if (ransac)
       {
-        //RANSAC
+        // RANSAC
         std::cout << "finding ransac keypoints..." << std::endl;
         ransac_estimator = new Ransac < pcl::SampleConsensusModelSphere < PointType >>();
         ransac_estimator->GetKeypoints (scene, scene_keypoints);
@@ -130,7 +135,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       }
       else if (harris)
       {
-        //HARRIS
+        // HARRIS
         std::cout << "finding harris keypoints..." << std::endl;
         harris_estimator = new Harris();
         harris_estimator->GetKeypoints (scene, scene_keypoints);
@@ -138,7 +143,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       }
       else if (random_points)
       {
-        //RANDOM
+        // RANDOM
         std::cout << "using random keypoints..." << std::endl;
         random->setInputCloud (scene);
         random->setSample (random_scene_samples);
@@ -147,7 +152,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       }
       else
       {
-        //UNIFORM
+        // UNIFORM
         std::cout << "finding uniform sampled keypoints..." << std::endl;
         uniform.SetSamplingSize (scene_ss);
         uniform.GetKeypoints (scene, scene_keypoints);
@@ -155,7 +160,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
 
       std::cout << "\tfound " << scene_keypoints->points.size () << " keypoints in the scene and " << model_keypoints->points.size () << " in the model" << std::endl;
 
-      //Calculate the correspondences between the model keypoints descriptors and the scene keypoints descriptors
+      // Calculate the correspondences between the model keypoints descriptors and the scene keypoints descriptors
       pcl::CorrespondencesPtr model_scene_corrs (new pcl::Correspondences ());
       if (fpfh)
       {
@@ -194,22 +199,31 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         model_scene_corrs = est.Run ();
       }
 
-      //Clustering the results and estimating an initial pose
+      // Clustering the results and estimating an initial pose
       std::cout << "Starting to cluster..." << std::endl;
       if (use_hough)
       {
-        //Hough3D
+        // Hough3D
         cluster = hough->GetClusters ( scene, scene_keypoints, scene_normals, model_scene_corrs);
       }
       else
       {
-        //GEOMETRIC CONSISTENCY
+        // Geometric Consistency
         cluster = gcg->GetClusters (model, scene, model_scene_corrs);
       }
     }
     std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
-    if(std::get < 0 > (cluster).size () > 0)
-      found_models[id] = cluster;
+    if(std::get < 0 > (cluster).size () > 0){
+        if(use_icp){
+            pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
+            std::cout << "\t USING ICP"<<std::endl;
+            pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
+            icp->Align (rotated_model, scene);
+            SetViewPoint (rotated_model);
+            std::get < 0 > (cluster)[0] *= icp->transformation_ ;
+        }
+      found_models[id] = cluster; 
+    }
     s.Notify2main();
     s.Wait4main();
   }

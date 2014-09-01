@@ -48,10 +48,6 @@ class OpenNI2Grabber
         //create the empty Pointcloud
         boost::shared_ptr<pcl::PointCloud<PointT>> cloud (new pcl::PointCloud<PointT>);
         
-        //initialize the PointCloud height and width
-        //cloud->height = std::max (image_height, depth_height);
-        //cloud->width = std::max (image_width, depth_width);
-
         //allow infinite values for points coordinates
         cloud->is_dense = false;
         double focal_x_depth = 5.9421434211923247e+02;
@@ -85,8 +81,6 @@ class OpenNI2Grabber
           cloud->points.assign (cloud->points.size (), pt);
         }
 
-
-
         for (unsigned int y = 0; y < depth_height; ++y)
             for ( unsigned int x = 0; x < depth_width; ++x){
                 PointT ptout;
@@ -111,13 +105,7 @@ class OpenNI2Grabber
                 } 
                 
             }
-            /*
-        cloud->sensor_origin_.setZero();
-        cloud->sensor_orientation_.w () = 0.0;
-        cloud->sensor_orientation_.x () = 1.0;
-        cloud->sensor_orientation_.y () = 0.0;
-        cloud->sensor_orientation_.z () = 0.0;
-    */
+
         cloud->height = 1;
         cloud->width = cloud->points.size();
         return (cloud);

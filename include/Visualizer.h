@@ -1,18 +1,16 @@
 #ifndef VISUALIZER_H
 #define VISUALIZER_H
 
-#include "Icp.h"
 #include "Error.h"
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/cloud_viewer.h>
-
+#include <pcl/registration/transforms.h>
 
 
 class Visualizer
 {
   public:
     pcl::visualization::PCLVisualizer viewer_;
-    ICP* icp_;
     int iter_;
     bool clean_;
     ErrorWriter e;

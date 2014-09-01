@@ -26,7 +26,7 @@ FindAndSubtractPlane (const pcl::PointCloud<PointType>::Ptr input, float distanc
   return (output);
 }
 
-ColorSampling::ColorSampling ()
+ColorSampling::ColorSampling (float filter): filter_(filter)
 {
   Clear ();
   rgb2yuv << 0.229, 0.587, 0.114, -0.14713, -0.28886, 0.436, 0.615, -0.51499, -0.10001;

@@ -12,7 +12,7 @@ public:
 
 	std::vector<xypair> registration_table;
 	std::vector<int32_t> depth_to_rgb_shift;
-	int32_t DEPTH_X_RES,DEPTH_Y_RES; // from init
+	int32_t DEPTH_X_RES,DEPTH_Y_RES; 
 
 	int DEPTH_MAX_METRIC_VALUE = 10000;
 	int DEPTH_NO_MM_VALUE = 10000;
@@ -20,7 +20,7 @@ public:
 	int REG_X_VAL_SCALE = 256; 
 	int S2D_PIXEL_CONST = 10;
 	double S2D_CONST_OFFSET = 0.375;
-	int DEPTH_SENSOR_X_RES = 1280; // ????
+	int DEPTH_SENSOR_X_RES = 1280; 
 	bool DEPTH_MIRROR_X = false;
 	bool DENSE_REGISTRATION = false;
 

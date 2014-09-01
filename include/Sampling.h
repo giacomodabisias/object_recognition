@@ -17,8 +17,9 @@ class ColorSampling
   public:
     Eigen::Matrix3f rgb2yuv;
     float avg_u_, avg_v_;
+    float filter_;
 
-    ColorSampling ();
+    ColorSampling (float filter);
 
     void
     Clear ();

@@ -20,35 +20,28 @@ GetRototraslationError (const Eigen::Matrix4f transformation)
   std::cout << rotation << std::endl;
 
   Eigen::Matrix3f tmp =  rotation.transpose();
-  //std::cout << "rotation trasposed" << std::endl;
-  //std::cout << tmp << std::endl;
   float theta = acos((tmp(0,0) + tmp(1,1) + tmp(2,2) - 1) / 2);
   rotation_error = frobeniusNorm((theta / (2 * sin(theta) )) * ( tmp - tmp.transpose()) );
-  //std::get < 0 > (e) = rotation_error;
-  //std::cout << "theta: " << theta << " (tmp.trace() - 1) / 2 " << (tmp.trace() - 1) / 2 << std::endl;
-  //std::cout << "matrix to be normalized" <<std::endl;
-  //std::cout << (theta / (2 * sin(theta) )) * ( tmp - tmp.transpose()) << std::endl;
 
   return (e);
 }
 
+ErrorWriter::ErrorWriter() 
+{
+  es_.open("pose_error.txt");
+}
 
-  ErrorWriter::ErrorWriter() 
-  {
-    es_.open("pose_error.txt");
-  }
+void 
+ErrorWriter::WriteError(error e, float fitness)
+{ if( std::isnan(std::get < 0 > (e)))
+    WriteError(fitness);
+  else
+    es_ << std::get < 0 > (e) << ", " << std::get < 1 > (e) << ", " << double(std::clock() - init) / CLOCKS_PER_SEC << ", " << fitness << std::endl;
+}
 
-  void 
-  ErrorWriter::WriteError(error e, float fitness)
-  { if( std::isnan(std::get < 0 > (e)))
-      WriteError(fitness);
-    else
-      es_ << std::get < 0 > (e) << ", " << std::get < 1 > (e) << ", " << double(std::clock() - init) / CLOCKS_PER_SEC << ", " << fitness << std::endl;
-  }
-
-  void 
-  ErrorWriter::WriteError(float fitness)
-  {
-    es_ << "onf, onf "  << double(std::clock() - init) / CLOCKS_PER_SEC << ", " << fitness << std::endl;
-  }
+void 
+ErrorWriter::WriteError(float fitness)
+{
+  es_ << "onf, onf "  << double(std::clock() - init) / CLOCKS_PER_SEC << ", " << fitness << std::endl;
+}
 

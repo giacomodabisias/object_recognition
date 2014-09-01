@@ -23,7 +23,6 @@ class Hough
     ClusterType
     GetClusters (pcl::PointCloud<PointType>::Ptr scene, pcl::PointCloud<PointType>::Ptr scene_keypoints,
         pcl::PointCloud<NormalType>::Ptr scene_normals, pcl::CorrespondencesPtr model_scene_corrs);
-
 };
 
 class GCG
