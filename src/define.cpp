@@ -1,7 +1,6 @@
 #include "define.h"
 
 const Eigen::Vector4f SUBSAMPLING_LEAF_SIZE (0.01f, 0.01f, 0.01f, 0.00f);
-std::clock_t init;
 std::string oni_file;
 
 //Algorithm params

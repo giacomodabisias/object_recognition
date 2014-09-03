@@ -16,7 +16,6 @@ typedef std::tuple<std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::
 typedef std::tuple<float, float> error;
 
 
-extern std::clock_t init;
 extern std::string oni_file;
 extern const Eigen::Vector4f SUBSAMPLING_LEAF_SIZE;
 

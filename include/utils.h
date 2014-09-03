@@ -5,7 +5,6 @@
 #include <pcl/features/normal_3d_omp.h>
 #include <iostream>
 #include <pcl/io/pcd_io.h>
-#include <ctime>
 #include <sstream>
 
 //Returns the frobenious norm of the input matrix

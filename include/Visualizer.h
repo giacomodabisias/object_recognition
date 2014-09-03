@@ -13,7 +13,6 @@ class Visualizer
     pcl::visualization::PCLVisualizer viewer_;
     int iter_;
     bool clean_;
-    ErrorWriter e;
     int r, g;
     std::stringstream ss_cloud_;
     std::vector<std::string> to_remove_;

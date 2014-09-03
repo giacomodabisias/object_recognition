@@ -20,6 +20,7 @@ main (int argc, char** argv)
     std::cout << " no models loaded " << std::endl;
     return 1;
   }
+
   
   // Check if an oni file is specified as input or if the camera stream has to be used and initialize the correct stream.
   OpenniStreamer * openni_streamer;
@@ -33,6 +34,7 @@ main (int argc, char** argv)
   Semaphore s(num_threads);
   std::vector<std::thread> thread_list(num_threads);
   std::vector<ClusterType> found_models(num_threads);
+  ErrorWriter e;
 
   // Read first frame and launch the threads
   if(!openni_streamer->HasDataLeft())
@@ -41,7 +43,7 @@ main (int argc, char** argv)
   copyPointCloud (*scene, *complete_scene);
 
   for(int i = 0; i < num_threads; ++i)
-      thread_list[i] = std::thread(FindObject, model_list[i], std::ref(scene), std::ref(s), std::ref(found_models), i, filters->at(i));
+      thread_list[i] = std::thread(FindObject, model_list[i], std::ref(scene), std::ref(s), std::ref(found_models), i, filters->at(i), std::ref(e));
     
   // Start the main detection loop
   // 1- wait for the threads to find all the objects

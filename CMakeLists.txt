@@ -119,8 +119,6 @@ include_directories(${GRABBER_PATH})
 FILE(GLOB_RECURSE SRCFILES ${SOURCE_PATH}/*.cpp )
 FILE(GLOB_RECURSE SRCFILES_GRABBER ${GRABBER_PATH}/*.cpp )
 
-message(${SRCFILES})
-
 add_executable (pcl_multi_object_recognition pcl_multi_object_recognition.cpp ${SRCFILES} ${SRCFILES_GRABBER})
 
 target_link_libraries( pcl_multi_object_recognition  ${OPENNI_LIBRARY} ${PCL_LIBRARIES} ${Freenect_LIBRARY} )

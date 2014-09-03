@@ -1,6 +1,6 @@
 #include "find_function.h"
 
-void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const int id, const float filter_intensity) {
+void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const int id, const float filter_intensity, ErrorWriter & e) {
 
   pcl::PointCloud<PointType>::Ptr model_keypoints (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<PointType>::Ptr complete_scene (new pcl::PointCloud<PointType> ());
@@ -24,6 +24,8 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   Hough * hough;
   GCG * gcg;
   ICP *icp;
+  struct timespec start, finish;
+  double elapsed;
 
   // Add the model to the filter so that the scene can be filtered using the model mean color
   if (to_filter)
@@ -78,7 +80,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   // Start the main object recognition loop
   while (!s.ToStop()){ 
     copyPointCloud (*original_scene, *scene);
-    init = std::clock();
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     // Delete the main plane to reduce the number of points in the scene point cloud
     if (segment)
@@ -214,14 +216,20 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
     }
     std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
     if(std::get < 0 > (cluster).size () > 0){
+        clock_gettime(CLOCK_MONOTONIC, &finish);
+        elapsed = (finish.tv_sec - start.tv_sec);
+        elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
         if(use_icp){
             pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
             std::cout << "\t USING ICP"<<std::endl;
             pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
-            icp->Align (rotated_model, scene);
-            SetViewPoint (rotated_model);
-            std::get < 0 > (cluster)[0] *= icp->transformation_ ;
-        }
+            icp->Align (rotated_model, original_scene);
+            //SetViewPoint (rotated_model);
+            std::get < 0 > (cluster)[0] *= icp->transformation_;
+
+            if(error_log)
+                e.WriteError((icp->transformation_), icp->fitness_score_, id, elapsed);
+          }
       found_models[id] = cluster; 
     }
     s.Notify2main();

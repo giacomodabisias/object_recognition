@@ -5,8 +5,6 @@
 Visualizer::Visualizer () : iter_ (0), clean_ (true), r(255), g(0)
 {
   viewer_.registerKeyboardCallback (KeyboardEventOccurred);
-  
-
 }
 
 void
@@ -43,23 +41,7 @@ Visualizer::Visualize ( const std::vector<pcl::PointCloud<PointType>::Ptr> model
 
     viewer_.addPointCloud (rotated_model, rotated_model_color_handler, ss_cloud_.str ());
   }
-  /*
-  if(error_log && use_icp)
-  {
-    if(icp_->fitness_score_ < 0.00095 && filtered_scene->points.size() > 20)
-    {
-      g = 255;
-      r = 0;
-      e.WriteError(GetRototraslationError((icp_->transformation_)), icp_->fitness_score_);
-    }
-    else 
-    {
-      r  = 255;
-      g = 0;
-      e.WriteError(icp_->fitness_score_);
-    }
-  }
-  */
+
   viewer_.spinOnce ();
   iter_++;
 }
