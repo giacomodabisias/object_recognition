@@ -31,14 +31,17 @@ Visualizer::Visualize ( const std::vector<pcl::PointCloud<PointType>::Ptr> model
     clean_ = false;
     pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
     pcl::transformPointCloud (*(model_list[i]), *rotated_model, (std::get < 0 > (found_models[i]))[0]);
-    
+    /*if(use_icp){
+    ICPRegistration icp ;
+    icp.Align (rotated_model, scene);
+    }*/
     SetViewPoint (rotated_model);
 
     ss_cloud_ << "instance" << i;
     to_remove_.push_back (ss_cloud_.str ());
 
     pcl::visualization::PointCloudColorHandlerCustom<PointType> rotated_model_color_handler (rotated_model, r, g, 0);
-
+    
     viewer_.addPointCloud (rotated_model, rotated_model_color_handler, ss_cloud_.str ());
   }
 

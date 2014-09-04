@@ -53,3 +53,4 @@ bool use_icp (false);
 bool segment (false);
 bool error_log(false);
 bool use_generalized_icp(false);
+bool reg(false);

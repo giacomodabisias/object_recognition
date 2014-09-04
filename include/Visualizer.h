@@ -5,7 +5,7 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/registration/transforms.h>
-
+#include "Icp.h"
 
 class Visualizer
 {

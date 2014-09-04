@@ -4,7 +4,7 @@ OpenniStreamer::OpenniStreamer ()
 {
   mode_ = 0;
   cloud_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-  rc_ = openni::OpenNI::initialize ();  // Initialize OpenNI 
+  rc_ = openni::OpenNI::initialize ();  
   if (rc_ != openni::STATUS_OK)
   {
     std::cout << "OpenNI initialization failed" << std::endl;
@@ -33,8 +33,7 @@ OpenniStreamer::OpenniStreamer ()
     std::cout << "Device initialization failed" << std::endl;
     device_.close ();
   }
-  rc_ = ir_.create (device_, openni::SENSOR_DEPTH);    // Create the VideoStream for IR
-
+  rc_ = ir_.create (device_, openni::SENSOR_DEPTH);   
   if (rc_ != openni::STATUS_OK)
   {
     std::cout << "Ir sensor creation failed" << std::endl;
@@ -42,8 +41,7 @@ OpenniStreamer::OpenniStreamer ()
   }
   else
     std::cout << "Ir sensor creation successful" << std::endl;
-  rc_ = ir_.start ();                      // Start the IR VideoStream
-  //ir.setMirroringEnabled(TRUE); 
+  rc_ = ir_.start ();                      
   if (rc_ != openni::STATUS_OK)
   {
     std::cout << "Ir activation failed" << std::endl;
@@ -54,7 +52,7 @@ OpenniStreamer::OpenniStreamer ()
 
   device_.setImageRegistrationMode (openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR);
 
-  rc_ = color_.create (device_, openni::SENSOR_COLOR);    // Create the VideoStream for Color
+  rc_ = color_.create (device_, openni::SENSOR_COLOR);    
 
   if (rc_ != openni::STATUS_OK)
   {
@@ -63,7 +61,7 @@ OpenniStreamer::OpenniStreamer ()
   }
   else
     std::cout << "Color sensor creation successful" << std::endl;
-  rc_ = color_.start ();                      // Start the Color VideoStream
+  rc_ = color_.start ();                   
 
   if (rc_ != openni::STATUS_OK)
   {
@@ -78,7 +76,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
 {
   mode_ = 1;
   cloud_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-  rc_ = openni::OpenNI::initialize ();  // Initialize OpenNI 
+  rc_ = openni::OpenNI::initialize (); 
   if (rc_ != openni::STATUS_OK)
   {
     std::cout << "OpenNI initialization failed" << std::endl;
@@ -97,7 +95,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
     std::cout << "Device initialization failed" << std::endl;
     device_.close ();
   }
-  rc_ = ir_.create (device_, openni::SENSOR_DEPTH);    // Create the VideoStream for IR
+  rc_ = ir_.create (device_, openni::SENSOR_DEPTH);    
 
   if (rc_ != openni::STATUS_OK)
   {
@@ -106,8 +104,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
   }
   else
     std::cout << "Ir sensor creation successful" << std::endl;
-  rc_ = ir_.start ();                      // Start the IR VideoStream
-  //ir.setMirroringEnabled(TRUE); 
+  rc_ = ir_.start ();                     
   if (rc_ != openni::STATUS_OK)
   {
     std::cout << "Ir activation failed" << std::endl;
@@ -118,7 +115,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
 
   device_.setImageRegistrationMode (openni::IMAGE_REGISTRATION_DEPTH_TO_COLOR);
 
-  rc_ = color_.create (device_, openni::SENSOR_COLOR);    // Create the VideoStream for Color
+  rc_ = color_.create (device_, openni::SENSOR_COLOR);    
 
   if (rc_ != openni::STATUS_OK)
   {
@@ -127,7 +124,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
   }
   else
     std::cout << "Color sensor creation successful" << std::endl;
-  rc_ = color_.start ();                      // Start the Color VideoStream
+  rc_ = color_.start ();                      
 
   if (rc_ != openni::STATUS_OK)
   {
@@ -142,9 +139,9 @@ pcl::PointCloud<PointType>::Ptr OpenniStreamer::GetCloud(){
   ir_.readFrame (&irf_);
   color_.readFrame (&colorf_);
   if(mode_ == 0){
-    cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), false, false);
+    cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), reg, false);
   }else{
-    cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), true, true);
+    cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), reg, true);
   }
   return cloud_;
 }

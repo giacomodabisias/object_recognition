@@ -3,6 +3,7 @@
 
 
 
+
 int
 main (int argc, char** argv)
 {
@@ -21,7 +22,6 @@ main (int argc, char** argv)
     return 1;
   }
 
-  
   // Check if an oni file is specified as input or if the camera stream has to be used and initialize the correct stream.
   OpenniStreamer * openni_streamer;
   if(!oni_file.empty())
@@ -50,9 +50,11 @@ main (int argc, char** argv)
   // 2- visualize the scene and the found models
   // 3- read a new scene
   // 4- wake up threads
+    
   while(!visualizer.viewer_.wasStopped ()){
     //wait for the threads to complete
     s.Wait4threads();
+    
     //Visualizing the model, scene and the estimated model position
     SetViewPoint (complete_scene);
     visualizer.Visualize (model_list, found_models, complete_scene);

@@ -2,7 +2,8 @@
 #define UTILS_H
 #include "help.h"
 #include <pcl/visualization/keyboard_event.h>
-#include <pcl/features/normal_3d_omp.h>
+//#include <pcl/features/normal_3d_omp.h>
+#include <pcl/features/normal_3d.h>
 #include <iostream>
 #include <pcl/io/pcd_io.h>
 #include <sstream>
@@ -39,7 +40,8 @@ class NormalEstimator
 {
   public:
 
-    pcl::NormalEstimationOMP<PointType, NormalType> norm_est_;
+    //pcl::NormalEstimationOMP<PointType, NormalType> norm_est_;
+    pcl::NormalEstimation<PointType, NormalType> norm_est_;
 
     NormalEstimator ();
 

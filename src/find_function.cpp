@@ -48,7 +48,6 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   {       
     ppfe_estimator = new Ppfe(model);
     model_keypoints = ppfe_estimator->GetModelKeypoints ();    
-
   }else
   {
     std::cout << "model size " << model->points.size () << std::endl;
@@ -78,9 +77,9 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
     icp = new ICPRegistration();
 
   // Start the main object recognition loop
-  while (!s.ToStop()){ 
+  while (!s.ToStop()){
+    clock_gettime(CLOCK_MONOTONIC, &start); 
     copyPointCloud (*original_scene, *scene);
-    clock_gettime(CLOCK_MONOTONIC, &start);
 
     // Delete the main plane to reduce the number of points in the scene point cloud
     if (segment)
@@ -96,11 +95,9 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       sor->setInputCloud (scene);
       sor->filter (*scene);
     }
-
     // Compute scene normals
     std::cout << "calculating scene normals... " << std::endl;
     scene_normals = norm.GetNormals (scene);
-
     // Calculate the scene keypoints using the specified method
     if (ppfe)
     {
@@ -133,7 +130,6 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         std::cout << "finding ransac keypoints..." << std::endl;
         ransac_estimator = new Ransac < pcl::SampleConsensusModelSphere < PointType >>();
         ransac_estimator->GetKeypoints (scene, scene_keypoints);
-
       }
       else if (harris)
       {
@@ -141,7 +137,6 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         std::cout << "finding harris keypoints..." << std::endl;
         harris_estimator = new Harris();
         harris_estimator->GetKeypoints (scene, scene_keypoints);
-
       }
       else if (random_points)
       {
@@ -150,7 +145,6 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         random->setInputCloud (scene);
         random->setSample (random_scene_samples);
         random->filter (*scene_keypoints);
-
       }
       else
       {
@@ -197,7 +191,8 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       else if (shot)
       {
         std::cout << "using shot descriptors" << std::endl;
-        KeyDes<pcl::SHOT352, pcl::SHOTEstimationOMP<PointType, NormalType, pcl::SHOT352> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        KeyDes<pcl::SHOT352, pcl::SHOTEstimation<PointType, NormalType, pcl::SHOT352> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        //KeyDes<pcl::SHOT352, pcl::SHOTEstimationOMP<PointType, NormalType, pcl::SHOT352> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
         model_scene_corrs = est.Run ();
       }
 
@@ -220,15 +215,15 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         elapsed = (finish.tv_sec - start.tv_sec);
         elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
         if(use_icp){
-            pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
-            std::cout << "\t USING ICP"<<std::endl;
-            pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
-            icp->Align (rotated_model, original_scene);
-            //SetViewPoint (rotated_model);
-            std::get < 0 > (cluster)[0] *= icp->transformation_;
 
+            pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
+            copyPointCloud (*model, *rotated_model);
+            std::cout << "\t USING ICP"<<std::endl;
+            pcl::transformPointCloud (*rotated_model, *rotated_model, (std::get < 0 > (cluster)[0]));
+            icp->Align (rotated_model, original_scene);
+            std::get < 0 > (cluster)[0] *= icp->transformation_;
             if(error_log)
-                e.WriteError((icp->transformation_), icp->fitness_score_, id, elapsed);
+                e.WriteError(icp->transformation_, icp->fitness_score_, id, elapsed);
           }
       found_models[id] = cluster; 
     }

@@ -19,9 +19,10 @@ ShowHelp (char *file_name)
   std::cout << "     -remove_outliers                   Remove ouliers from the scene." << std::endl;
   std::cout << "     -segment                           Segments the objects in the scene removing the major plane." << std::endl;
   std::cout << "     -log                               Saves the pose estimation error in a file called pose_error. " << std::endl;
+  std::cout << "     -reg                               Registers depth and rgb. " << std::endl;
   std::cout << "     -use_generalized_icp               Use the generalized ICP algorithm instead of the normal ICP algorithm. " << std::endl;  
   std::cout << "     --device val                       Specify a growing number starting from 0 if more devices are present" << std::endl;
-  std::cout << "     --oni_file val                     Oni file path to use in offilne mode." << std::endl;
+  std::cout << "     --oni_file val                     Oni file path to use in offline mode." << std::endl;
   std::cout << "     --filter_intensity val             Max distance between colors normalized between 0 and 1 (default 0.02)" << std::endl;
   std::cout << "     --descriptor_distance val          Descriptor max distance to be a match (default 0.25)" << std::endl;
   std::cout << "     --algorithm (hough|gc)             Clustering algorithm used (default Hough)." << std::endl;
@@ -79,6 +80,8 @@ ParseCommandLine (int argc, char *argv[])
     error_log = true;
   if (pcl::console::find_switch (argc, argv, "-use_generalized_icp"))
     use_generalized_icp = true;
+  if (pcl::console::find_switch (argc, argv, "-reg"))
+    reg = true;
 
   std::string used_algorithm;
   if (pcl::console::parse_argument (argc, argv, "--algorithm", used_algorithm) != -1)

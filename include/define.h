@@ -69,6 +69,7 @@ extern bool use_icp;
 extern bool segment;
 extern bool error_log;
 extern bool use_generalized_icp;
+extern bool reg;
 
 
 #endif
