@@ -15,8 +15,9 @@ main (int argc, char** argv)
   pcl::PointCloud<PointType>::Ptr complete_scene (new pcl::PointCloud<PointType> ());
 
   std::vector<float> * filters = new std::vector<float>();
+  std::vector<int> * icp_iterations = new std::vector<int>();
   // Load the input model (n models but for now only one is used)
-  std::vector < pcl::PointCloud < PointType > ::Ptr > model_list = ReadModels (argv, *filters);
+  std::vector < pcl::PointCloud < PointType > ::Ptr > model_list = ReadModels (argv, *filters, *icp_iterations);
   if (model_list.size () == 0) {
     std::cout << " no models loaded " << std::endl;
     return 1;
@@ -43,7 +44,7 @@ main (int argc, char** argv)
   copyPointCloud (*scene, *complete_scene);
 
   for(int i = 0; i < num_threads; ++i)
-      thread_list[i] = std::thread(FindObject, model_list[i], std::ref(scene), std::ref(s), std::ref(found_models), i, filters->at(i), std::ref(e));
+      thread_list[i] = std::thread(FindObject, model_list[i], std::ref(scene), std::ref(s), std::ref(found_models), i, filters->at(i), icp_iterations->at(i), std::ref(e));
     
   // Start the main detection loop
   // 1- wait for the threads to find all the objects

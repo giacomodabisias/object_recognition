@@ -29,7 +29,6 @@ ShowKeyHelp ()
   std::cout << "Press i to toggle icp alignment" << std::endl;
   std::cout << "Press n to incraese aquired distance" << std::endl;
   std::cout << "Press m to incraese aquired distance" << std::endl;
-  std::cout << "Press v to switch between filtered and complete view" << std::endl;
   std::cout << "Press d to lower segmentation threshold " << std::endl;
   std::cout << "Press f to increase segmentation threshold" << std::endl;
   std::cout << "Press l to lower filtering" << std::endl;

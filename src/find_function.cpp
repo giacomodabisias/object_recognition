@@ -1,9 +1,9 @@
 #include "find_function.h"
 
-void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, std::vector<ClusterType>& found_models,const int id, const float filter_intensity, ErrorWriter & e) {
+void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, 
+                 std::vector<ClusterType>& found_models,const int id, const float filter_intensity, const int icp_iteration,  ErrorWriter & e) {
 
   pcl::PointCloud<PointType>::Ptr model_keypoints (new pcl::PointCloud<PointType> ());
-  pcl::PointCloud<PointType>::Ptr complete_scene (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<PointType>::Ptr scene_keypoints (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<NormalType>::Ptr model_normals (new pcl::PointCloud<NormalType> ());
   pcl::PointCloud<NormalType>::Ptr scene_normals (new pcl::PointCloud<NormalType> ());
@@ -23,7 +23,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   Ppfe *ppfe_estimator;
   Hough * hough;
   GCG * gcg;
-  ICP *icp;
+  ICP icp;
   struct timespec start, finish;
   double elapsed;
 
@@ -70,11 +70,6 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
     else
       gcg = new GCG();
   }
-
-  if(use_generalized_icp)
-    icp = new GeneralizedICPRegistration();
-  else
-    icp = new ICPRegistration();
 
   // Start the main object recognition loop
   while (!s.ToStop()){
@@ -215,15 +210,21 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         elapsed = (finish.tv_sec - start.tv_sec);
         elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
         if(use_icp){
-
             pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
-            copyPointCloud (*model, *rotated_model);
             std::cout << "\t USING ICP"<<std::endl;
-            pcl::transformPointCloud (*rotated_model, *rotated_model, (std::get < 0 > (cluster)[0]));
-            icp->Align (rotated_model, original_scene);
-            std::get < 0 > (cluster)[0] *= icp->transformation_;
+            pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
+       
+            
+            Eigen::Matrix4f tmp = Eigen::Matrix4f::Identity();
+            for(int i = 0; i< icp_iteration; ++i){
+            //while(!icp.HasConverged()){
+              icp.Align (rotated_model, original_scene);
+              tmp = icp.transformation_ * tmp;  
+            }
+            std::get < 0 > (cluster)[0] =  tmp * std::get < 0 > (cluster)[0];
+            
             if(error_log)
-                e.WriteError(icp->transformation_, icp->fitness_score_, id, elapsed);
+                e.WriteError(icp.transformation_, icp.fitness_score_, id, elapsed);
           }
       found_models[id] = cluster; 
     }
