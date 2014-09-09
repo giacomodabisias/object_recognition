@@ -3,6 +3,7 @@
 OpenniStreamer::OpenniStreamer ()
 {
   mode_ = 0;
+  frame_count_ = 0;
   cloud_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
   rc_ = openni::OpenNI::initialize ();  
   if (rc_ != openni::STATUS_OK)
@@ -75,6 +76,7 @@ OpenniStreamer::OpenniStreamer ()
 OpenniStreamer::OpenniStreamer (std::string file_name)
 {
   mode_ = 1;
+  frame_count_ = 0;
   cloud_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
   rc_ = openni::OpenNI::initialize (); 
   if (rc_ != openni::STATUS_OK)
@@ -143,6 +145,7 @@ pcl::PointCloud<PointType>::Ptr OpenniStreamer::GetCloud(){
   }else{
     cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), reg, true);
   }
+  frame_count_++;
   return cloud_;
 }
 
@@ -150,5 +153,5 @@ bool OpenniStreamer::HasDataLeft(){
   if (mode_ == 0)
     return true;
   else
-    return true;//device_.hasDataLeft ();
+    return (device_.getPlaybackControl()->getNumberOfFrames(ir_) >= frame_count_);//device_.hasDataLeft ();
 }

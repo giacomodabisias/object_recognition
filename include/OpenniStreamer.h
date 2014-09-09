@@ -17,9 +17,10 @@ class OpenniStreamer
     openni::Status rc_;
     openni::VideoFrameRef irf_;
     openni::VideoFrameRef colorf_;
-    OpenNI2Grabber < pcl::PointXYZRGB > *openni2_grabber_;
+    OpenNI2Grabber < pcl::PointXYZRGB > *openni2_grabber_ = 0;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_ ;
     int mode_;
+    int frame_count_;
 
     OpenniStreamer ();
 
