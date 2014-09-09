@@ -9,14 +9,13 @@ ICP::ICP ()
     // Set the max correspondence distance to 5cm (e.g., correspondences with higher distances will be ignored)
     icp_->setMaxCorrespondenceDistance (1); //5cm = 0.05
     // Set the maximum number of iterations (criterion 1)
-    icp_->setMaximumIterations (30);
+    icp_->setMaximumIterations (20);
     // Set the transformation epsilon (criterion 2)
     icp_->setTransformationEpsilon (1e-6);
     // Set the euclidean distance difference epsilon (criterion 3)
     icp_->setEuclideanFitnessEpsilon (1);
 
     fitness_score_ = 1;
-
     transformation_.Identity();
   }                 
 

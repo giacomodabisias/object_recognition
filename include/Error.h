@@ -23,7 +23,7 @@ public:
   ~ErrorWriter();
 
   void 
-  WriteError(const Eigen::Matrix4f transformation, float fitness, int id, double end);
+  WriteError(const Eigen::Matrix4f transformation, float fitness, int id, double end, int frame_index);
 
   void 
   WriteError( float fitness, double end);

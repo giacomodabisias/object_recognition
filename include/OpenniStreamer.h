@@ -29,6 +29,7 @@ class OpenniStreamer
     pcl::PointCloud<PointType>::Ptr GetCloud ();
 
     bool HasDataLeft ();
+    int GetFrameIndex();
 };
 
 #endif

@@ -88,8 +88,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
     std::cout << "OpenNI initialization successful" << std::endl;
   const char *cstr = file_name.c_str();
   rc_ = device_.open(cstr);
-
- 
+  device_.trigger();
   openni2_grabber_ = new OpenNI2Grabber < pcl::PointXYZRGB > ("freenect");
 
   if (rc_ != openni::STATUS_OK)
@@ -98,7 +97,6 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
     device_.close ();
   }
   rc_ = ir_.create (device_, openni::SENSOR_DEPTH);    
-
   if (rc_ != openni::STATUS_OK)
   {
     std::cout << "Ir sensor creation failed" << std::endl;
@@ -154,4 +152,8 @@ bool OpenniStreamer::HasDataLeft(){
     return true;
   else
     return (device_.getPlaybackControl()->getNumberOfFrames(ir_) >= frame_count_);//device_.hasDataLeft ();
+}
+
+int OpenniStreamer::GetFrameIndex(){
+  return irf_.getFrameIndex();
 }

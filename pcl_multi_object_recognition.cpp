@@ -36,15 +36,17 @@ main (int argc, char** argv)
   std::vector<std::thread> thread_list(num_threads);
   std::vector<ClusterType> found_models(num_threads);
   ErrorWriter e;
+  int frame_index;
 
   // Read first frame and launch the threads
   if(!openni_streamer->HasDataLeft())
       exit(0);
   scene = openni_streamer->GetCloud();
   copyPointCloud (*scene, *complete_scene);
+  frame_index = openni_streamer->GetFrameIndex();
 
   for(int i = 0; i < num_threads; ++i)
-      thread_list[i] = std::thread(FindObject, model_list[i], std::ref(scene), std::ref(s), std::ref(found_models), i, filters->at(i), icp_iterations->at(i), std::ref(e));
+      thread_list[i] = std::thread(FindObject, model_list[i], std::ref(scene), std::ref(s), std::ref(found_models), i, filters->at(i), icp_iterations->at(i), std::ref(e), std::ref(frame_index));
     
   // Start the main detection loop
   // 1- wait for the threads to find all the objects
@@ -64,6 +66,7 @@ main (int argc, char** argv)
     if(!openni_streamer->HasDataLeft())
       break;
     scene = openni_streamer->GetCloud();
+    frame_index = openni_streamer->GetFrameIndex();
     copyPointCloud (*scene, *complete_scene);
     // Wake up the threads
     s.Notify2threads();

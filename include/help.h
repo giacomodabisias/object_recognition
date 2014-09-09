@@ -8,11 +8,11 @@
 
 //Shows help when argument list is invalid
 inline void
-ShowHelp (char *file_name);
+ShowHelp (char * file_name);
 
 //Sets all the algorithms variables using the input arguments
 void
-ParseCommandLine (int argc, char *argv[]);
+ParseCommandLine (int argc, char * argv[]);
 
 //Displayes help during visualization
 inline void

@@ -24,12 +24,12 @@ public:
 	bool DEPTH_MIRROR_X = false;
 	bool DENSE_REGISTRATION = false;
 
-	freenect_reg_info * regdata;
-	freenect_zero_plane_info * zpi;
+	freenect_reg_info * regdata = 0;
+	freenect_zero_plane_info * zpi = 0;
 	Freenect::Freenect myfreenect;
-    Freenect::FreenectDevice* device;
+    Freenect::FreenectDevice * device = 0;
     freenect_registration reg;
-    freenect_device* dev;
+    freenect_device * dev = 0;
 
 	KinectRegistration(bool mirror);
 

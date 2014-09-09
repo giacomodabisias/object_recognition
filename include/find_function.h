@@ -15,6 +15,6 @@
 
 
 void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, 
-	             std::vector<ClusterType>& found_models,const  int id, const float filter, const int icp_iteration, ErrorWriter & e);
+	             std::vector<ClusterType>& found_models,const  int id, const float filter, const int icp_iteration, ErrorWriter & e, const int &frame_index);
 
 #endif

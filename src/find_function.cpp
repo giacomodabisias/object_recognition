@@ -1,7 +1,7 @@
 #include "find_function.h"
 
 void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, 
-                 std::vector<ClusterType>& found_models,const int id, const float filter_intensity, const int icp_iteration,  ErrorWriter & e) {
+                 std::vector<ClusterType>& found_models,const int id, const float filter_intensity, const int icp_iteration,  ErrorWriter & e, const int & frame_index) {
 
   pcl::PointCloud<PointType>::Ptr model_keypoints (new pcl::PointCloud<PointType> ());
   pcl::PointCloud<PointType>::Ptr scene_keypoints (new pcl::PointCloud<PointType> ());
@@ -214,7 +214,6 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
             std::cout << "\t USING ICP"<<std::endl;
             pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
        
-            
             Eigen::Matrix4f tmp = Eigen::Matrix4f::Identity();
             for(int i = 0; i< icp_iteration; ++i){
             //while(!icp.HasConverged()){
@@ -224,7 +223,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
             std::get < 0 > (cluster)[0] =  tmp * std::get < 0 > (cluster)[0];
             
             if(error_log)
-                e.WriteError(icp.transformation_, icp.fitness_score_, id, elapsed);
+                e.WriteError(icp.transformation_, icp.fitness_score_, id, elapsed, frame_index);
           }
       found_models[id] = cluster; 
     }

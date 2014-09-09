@@ -20,15 +20,15 @@ ErrorWriter::GetRototraslationError (const Eigen::Matrix4f transformation)
 ErrorWriter::ErrorWriter() 
 {
   es_.open("pose_error.txt");
-  es_ << "thread id, translation error, rotation error, recognition time, icp fitness score" <<std::endl;
+  es_ << "frame_index, thread_id, thread id, translation error, rotation error, recognition time, icp fitness score" <<std::endl;
 }
 
 void 
-ErrorWriter::WriteError(const Eigen::Matrix4f transformation, float fitness, int id, double end)
+ErrorWriter::WriteError(const Eigen::Matrix4f transformation, float fitness, int id, double end, int frame_index)
 { 
   GetRototraslationError(transformation);
   std::unique_lock<std::mutex> lock(mutex_);
-  es_ << id << ", " << std::get < 0 > (e_) << ", " << std::get < 1 > (e_) << ", " << end << ", " << fitness << std::endl;
+  es_ << frame_index << ", " << id << ", " << std::get < 0 > (e_) << ", " << std::get < 1 > (e_) << ", " << end << ", " << fitness << std::endl;
 }
 
 void 

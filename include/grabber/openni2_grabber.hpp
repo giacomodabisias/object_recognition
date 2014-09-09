@@ -11,9 +11,9 @@ class OpenNI2Grabber
 {
     public:
 
-        uint16_t * depth_maptmp;
+        uint16_t * depth_maptmp = 0;
         bool init = true;
-        KinectRegistration *reg;
+        KinectRegistration *reg = 0;
         std::string dev_type_;
 
     OpenNI2Grabber(std::string dev_type):dev_type_(dev_type){}

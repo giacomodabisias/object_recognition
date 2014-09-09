@@ -12,7 +12,7 @@ public:
     Eigen::Matrix3f rotation_;
     Eigen::Vector3f traslation_;
     float fitness_score_;
-    pcl::Registration<PointType, PointType> * icp_;
+    pcl::Registration<PointType, PointType> * icp_ = 0;
 
     ICP();
 
