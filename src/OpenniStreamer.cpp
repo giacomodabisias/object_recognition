@@ -88,7 +88,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
     std::cout << "OpenNI initialization successful" << std::endl;
   const char *cstr = file_name.c_str();
   rc_ = device_.open(cstr);
-  device_.trigger();
+
   openni2_grabber_ = new OpenNI2Grabber < pcl::PointXYZRGB > ("freenect");
 
   if (rc_ != openni::STATUS_OK)
@@ -138,11 +138,7 @@ OpenniStreamer::OpenniStreamer (std::string file_name)
 pcl::PointCloud<PointType>::Ptr OpenniStreamer::GetCloud(){
   ir_.readFrame (&irf_);
   color_.readFrame (&colorf_);
-  if(mode_ == 0){
-    cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), reg, false);
-  }else{
-    cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), reg, true);
-  }
+  cloud_ = openni2_grabber_->get_point_cloud ((openni::RGB888Pixel*)colorf_.getData(), (uint16_t*)irf_.getData(), distance, true, colorf_.getHeight(), colorf_.getWidth(), reg, mode_);
   frame_count_++;
   return cloud_;
 }

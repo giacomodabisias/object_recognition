@@ -70,6 +70,8 @@ extern bool segment;
 extern bool error_log;
 extern bool use_generalized_icp;
 extern bool reg;
+extern bool _3dsc;
+extern bool usc;
 
 
 #endif

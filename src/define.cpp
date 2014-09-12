@@ -54,3 +54,5 @@ bool segment (false);
 bool error_log(false);
 bool use_generalized_icp(false);
 bool reg(false);
+bool _3dsc(false);
+bool usc(false);

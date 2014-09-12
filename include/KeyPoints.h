@@ -1,5 +1,6 @@
 #ifndef KEYPOINTS_H
 #define KEYPOINTS_H
+#include "KeyPoints.hpp"
 
 #include "define.h"
 #include <pcl/keypoints/uniform_sampling.h>
@@ -7,12 +8,8 @@
 #include <pcl/features/range_image_border_extractor.h>
 #include <pcl/keypoints/narf_keypoint.h>
 #include <pcl/range_image/range_image.h>
-#include <pcl/sample_consensus/ransac.h>
 #include <pcl/keypoints/sift_keypoint.h>
 #include <pcl/sample_consensus/sac_model_sphere.h>
-
-
-
 
 class Narf
 {
@@ -53,27 +50,6 @@ class Harris
     GetKeypoints (pcl::PointCloud<PointType>::Ptr cloud, pcl::PointCloud<PointType>::Ptr cloud_keypoints);
 };
 
-template<class T>
-class Ransac
-{
-  public:
-    std::vector<int> cloud_inliers_;
-
-    void
-    GetKeypoints (pcl::PointCloud<PointType>::Ptr cloud, pcl::PointCloud<PointType>::Ptr cloud_keypoints)
-    {
-
-      typename T::Ptr cloud_plane (new T (cloud));
-
-      pcl::RandomSampleConsensus < pcl::PointXYZRGB > model_ransac (cloud_plane);
-      model_ransac.computeModel ();
-      model_ransac.getInliers (cloud_inliers_);
-
-      pcl::copyPointCloud < pcl::PointXYZRGB > (*cloud, cloud_inliers_, *cloud_keypoints);
-    }
-
-};
-
 class Uniform
 {
   public:
@@ -88,5 +64,4 @@ class Uniform
     GetKeypoints (pcl::PointCloud<PointType>::Ptr cloud, pcl::PointCloud<PointType>::Ptr cloud_keypoints);
 
 };
-
 #endif

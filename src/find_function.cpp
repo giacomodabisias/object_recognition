@@ -186,10 +186,22 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       else if (shot)
       {
         std::cout << "using shot descriptors" << std::endl;
-        KeyDes<pcl::SHOT352, pcl::SHOTEstimation<PointType, NormalType, pcl::SHOT352> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
-        //KeyDes<pcl::SHOT352, pcl::SHOTEstimationOMP<PointType, NormalType, pcl::SHOT352> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        KeyDes<pcl::SHOT352, pcl::SHOTEstimationOMP<PointType, NormalType, pcl::SHOT352> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
         model_scene_corrs = est.Run ();
       }
+      else if (_3dsc)
+      {
+        std::cout << "using 3dsc descriptors" << std::endl;
+        ShapeContext3D est (model_keypoints, scene_keypoints, model_normals, scene_normals);
+        model_scene_corrs = est.run ();
+      }
+      else if (usc)
+      {
+        std::cout << "using usc descriptors" << std::endl;
+        Usc est (model_keypoints, scene_keypoints);
+        model_scene_corrs = est.run ();
+      }
+  
 
       // Clustering the results and estimating an initial pose
       std::cout << "Starting to cluster..." << std::endl;

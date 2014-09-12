@@ -1,4 +1,4 @@
-#include "Keypoints.hpp"
+#include "KeyPoints.h"
 
 Narf::Narf () :
     rotation_invariant_ (true), cloud_sensor_pose_ (Eigen::Affine3f::Identity ())

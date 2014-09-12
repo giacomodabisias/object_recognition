@@ -5,8 +5,8 @@
 #include "define.h"
 #include "Sampling.h"
 #include "Ppfe.h"
-#include "KeyDes.hpp"
-#include "Keypoints.hpp"
+#include "KeyDes.h"
+#include "KeyPoints.h"
 #include "Cluster.h"
 #include <pcl/filters/statistical_outlier_removal.h>
 #include "Semaphore.h"

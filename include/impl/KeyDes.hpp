@@ -28,10 +28,10 @@ class KeyDes
     typename P::Ptr scene_keypoints_;
     typename PN::Ptr model_normals_;
     typename PN::Ptr scene_normals_;
-    bool created;
+    bool created_;
 
     KeyDes (P::Ptr model, P::Ptr model_keypoints, P::Ptr scene, P::Ptr scene_keypoints, PN::Ptr model_normals, PN::Ptr scene_normals) :
-        model_descriptors_ (new PD ()), scene_descriptors_ (new PD ()), model_ (model), model_keypoints_ (model_keypoints), scene_ (scene), scene_keypoints_ (scene_keypoints), model_normals_ (model_normals), scene_normals_ (scene_normals), created (false)
+        model_descriptors_ (new PD ()), scene_descriptors_ (new PD ()), model_ (model), model_keypoints_ (model_keypoints), scene_ (scene), scene_keypoints_ (scene_keypoints), model_normals_ (model_normals), scene_normals_ (scene_normals), created_ (false)
     {
     }
 
@@ -53,7 +53,7 @@ class KeyDes
       est.setRadiusSearch (descr_rad);
       est.compute (*scene_descriptors_);
 
-      if (!created)
+      if (!created_)
       {
         //create model descriptors
         std::cout << "calculating model descriptors " << std::endl;
@@ -63,7 +63,7 @@ class KeyDes
         pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree2 (new pcl::search::KdTree<pcl::PointXYZRGB>);
         est.setSearchMethod (tree2);
         est.compute (*model_descriptors_);
-        created = true;
+        created_ = true;
       }
 
       pcl::KdTreeFLANN<T> match_search;

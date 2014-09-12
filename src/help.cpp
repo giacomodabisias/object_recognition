@@ -27,7 +27,7 @@ ShowHelp (char *file_name)
   std::cout << "     --descriptor_distance val          Descriptor max distance to be a match (default 0.25)" << std::endl;
   std::cout << "     --algorithm (hough|gc)             Clustering algorithm used (default Hough)." << std::endl;
   std::cout << "     --keypoints (narf|sift|uniform|random|harris)    Keypoints detection algorithm (default uniform)." << std::endl;
-  std::cout << "     --descriptors (shot|fpfh|pfh|pfhrgb|ppf)          Descriptor type (default shot)." << std::endl;
+  std::cout << "     --descriptors (shot|fpfh|pfh|pfhrgb|ppf|3dsc|usc)    Descriptor type (default shot)." << std::endl;
   std::cout << "     --model_ss val                     Model uniform sampling radius (default 0.005)" << std::endl;
   std::cout << "     --scene_ss val                     Scene uniform sampling radius (default 0.005)" << std::endl;
   std::cout << "     --rf_rad val:                      Hough reference frame radius (default 0.02)" << std::endl;
@@ -124,7 +124,11 @@ ParseCommandLine (int argc, char *argv[])
     else if (used_descriptors.compare ("fpfh") == 0)
       fpfh = true;
     else if (used_descriptors.compare ("ppf") == 0)
-      ppf = true;
+      ppf = true;/*
+    else if (used_descriptors.compare ("3dsc") == 0)        // ToFix the normal number differs from the keypoint number
+      _3dsc = true;*/
+    else if(used_descriptors.compare("usc") == 0)
+      usc = true;
     else if (used_descriptors.compare ("ppfrgb") == 0)
       ppfrgb = true;
     else if (used_descriptors.compare ("pfh") == 0)
