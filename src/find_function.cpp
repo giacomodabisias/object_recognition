@@ -204,40 +204,45 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   
 
       // Clustering the results and estimating an initial pose
-      std::cout << "Starting to cluster..." << std::endl;
-      if (use_hough)
-      {
-        // Hough3D
-        cluster = hough->GetClusters ( scene, scene_keypoints, scene_normals, model_scene_corrs);
+      if(model_scene_corrs->size() > 0){
+        std::cout << "Starting to cluster..." << std::endl;
+        if (use_hough)
+        {
+          // Hough3D
+          cluster = hough->GetClusters ( scene, scene_keypoints, scene_normals, model_scene_corrs);
+        }
+        else
+        {
+          // Geometric Consistency
+          cluster = gcg->GetClusters (model, scene, model_scene_corrs);
+        }
+        std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
+      
+        if(std::get < 0 > (cluster).size () > 0){
+            clock_gettime(CLOCK_MONOTONIC, &finish);
+            elapsed = (finish.tv_sec - start.tv_sec);
+            elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+            if(use_icp){
+                pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
+                std::cout << "\t USING ICP"<<std::endl;
+                pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
+           
+                Eigen::Matrix4f tmp = Eigen::Matrix4f::Identity();
+                for(int i = 0; i< icp_iteration; ++i){
+                //while(!icp.HasConverged()){
+                  icp.Align (rotated_model, original_scene);
+                  tmp = icp.transformation_ * tmp;  
+                }
+                std::get < 0 > (cluster)[0] =  tmp * std::get < 0 > (cluster)[0];
+                
+                if(error_log)
+                    e.WriteError(icp.transformation_, icp.fitness_score_, id, elapsed, frame_index);
+              }
+          found_models[id] = cluster; 
+        }
       }
       else
-      {
-        // Geometric Consistency
-        cluster = gcg->GetClusters (model, scene, model_scene_corrs);
-      }
-    }
-    std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
-    if(std::get < 0 > (cluster).size () > 0){
-        clock_gettime(CLOCK_MONOTONIC, &finish);
-        elapsed = (finish.tv_sec - start.tv_sec);
-        elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-        if(use_icp){
-            pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
-            std::cout << "\t USING ICP"<<std::endl;
-            pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
-       
-            Eigen::Matrix4f tmp = Eigen::Matrix4f::Identity();
-            for(int i = 0; i< icp_iteration; ++i){
-            //while(!icp.HasConverged()){
-              icp.Align (rotated_model, original_scene);
-              tmp = icp.transformation_ * tmp;  
-            }
-            std::get < 0 > (cluster)[0] =  tmp * std::get < 0 > (cluster)[0];
-            
-            if(error_log)
-                e.WriteError(icp.transformation_, icp.fitness_score_, id, elapsed, frame_index);
-          }
-      found_models[id] = cluster; 
+        std::cout << "No correspondences found" << std::endl;
     }
     s.Notify2main();
     s.Wait4main();
