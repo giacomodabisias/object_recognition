@@ -11,6 +11,8 @@
 typedef pcl::PointXYZRGB PointType;
 typedef pcl::PointCloud<PointType>::ConstPtr CloudConstPtr;
 typedef pcl::Normal NormalType;
+typedef pcl::PointXYZ XYZType;
+typedef pcl::PointXYZI XYZIType;
 typedef pcl::ReferenceFrame RFType;
 typedef std::tuple<std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> >, std::vector<pcl::Correspondences>> ClusterType;
 typedef std::tuple<float, float> error;

@@ -30,8 +30,8 @@ class Sift
 {
   public:
     pcl::PointCloud<pcl::PointWithScale> cloud_result_;
-    pcl::SIFTKeypoint<pcl::PointXYZRGB, pcl::PointWithScale> sift_;
-    pcl::search::KdTree<pcl::PointXYZRGB>::Ptr tree_;
+    pcl::SIFTKeypoint<PointType, pcl::PointWithScale> sift_;
+    pcl::search::KdTree<PointType>::Ptr tree_;
 
     Sift ();
 

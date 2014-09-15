@@ -12,16 +12,16 @@ class Ppfe
 {
   public:
 
-    pcl::SACSegmentation<pcl::PointXYZ> seg_;
-    pcl::ExtractIndices<pcl::PointXYZ> extract_;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr model_xyz_;
+    pcl::SACSegmentation<XYZType> seg_;
+    pcl::ExtractIndices<XYZType> extract_;
+    pcl::PointCloud<XYZType>::Ptr model_xyz_;
     pcl::ModelCoefficients::Ptr coefficients_;
     pcl::PointIndices::Ptr inliers_;
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud_model_input_;
     pcl::PointCloud<pcl::PPFSignature>::Ptr cloud_model_ppf_;
     pcl::PPFRegistration<pcl::PointNormal, pcl::PointNormal> ppf_registration_;
     pcl::PPFHashMapSearch::Ptr hashmap_search_;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_scene_;
+    pcl::PointCloud<XYZType>::Ptr cloud_scene_;
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud_scene_input_;
     pcl::PointCloud<pcl::PointNormal> cloud_output_subsampled_;
     Eigen::Matrix4f mat_;
@@ -42,6 +42,6 @@ class Ppfe
 };
 
 pcl::PointCloud<pcl::PointNormal>::Ptr
-SubsampleAndCalculateNormals (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+SubsampleAndCalculateNormals (pcl::PointCloud<XYZType>::Ptr cloud);
 
 #endif

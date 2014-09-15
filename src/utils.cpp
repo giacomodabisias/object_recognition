@@ -103,14 +103,14 @@ KeyboardEventOccurred (const pcl::visualization::KeyboardEvent &event)
   }
 }
 
-std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>
+std::vector<pcl::PointCloud<PointType>::Ptr>
 ReadModels (char** argv, std::vector<float>& filters, std::vector<int>& icp_iterations)
 {
   pcl::PCDReader reader;
   char name[512];
   float filter;
   int icp_iteration;
-  std::vector < pcl::PointCloud < pcl::PointXYZRGB > ::Ptr > cloud_models;
+  std::vector < pcl::PointCloud <PointType> ::Ptr > cloud_models;
 
   std::ifstream pcd_file_list (argv[1]);
   if(pcd_file_list.is_open()){
@@ -128,7 +128,7 @@ ReadModels (char** argv, std::vector<float>& filters, std::vector<int>& icp_iter
       icp_iterations.push_back(icp_iteration);
       if (std::strlen (name) > 2)
       {
-        pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGB> ());
+        pcl::PointCloud<PointType>::Ptr cloud (new pcl::PointCloud<PointType> ());
         reader.read (name, *cloud);
         ///SetViewPoint(cloud);
         cloud_models.push_back (cloud);

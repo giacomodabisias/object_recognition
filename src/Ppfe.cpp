@@ -4,13 +4,13 @@
 Ppfe::Ppfe (pcl::PointCloud<PointType>::Ptr model)
 {
 
-  hashmap_search_ = boost::make_shared < pcl::PPFHashMapSearch > (12.0f / 180.0f * float (M_PI), 0.05f);
+  hashmap_search_ = boost::make_shared <pcl::PPFHashMapSearch> (12.0f / 180.0f * float (M_PI), 0.05f);
   cloud_model_ppf_ = boost::make_shared<pcl::PointCloud<pcl::PPFSignature>> ();
   inliers_ = boost::make_shared<pcl::PointIndices> ();
-  model_xyz_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>> ();
+  model_xyz_ = boost::make_shared<pcl::PointCloud<XYZType>> ();
   copyPointCloud (*model, *model_xyz_);
   coefficients_ = boost::make_shared<pcl::ModelCoefficients> ();
-  cloud_scene_ = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>> ();
+  cloud_scene_ = boost::make_shared<pcl::PointCloud<XYZType>> ();
   seg_.setOptimizeCoefficients (true);
   seg_.setModelType (pcl::SACMODEL_PLANE);
   seg_.setMethodType (pcl::SAC_RANSAC);
@@ -53,11 +53,11 @@ Ppfe::GetCluster (pcl::PointCloud<PointType>::Ptr scene)
 
   ppf_registration_.setInputTarget (cloud_scene_input_);
   ppf_registration_.align (cloud_output_subsampled_);
-  // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_output_subsampled_xyz (new pcl::PointCloud<pcl::PointXYZ> ());
+  // pcl::PointCloud<XYZType>::Ptr cloud_output_subsampled_xyz (new pcl::PointCloud<XYZType> ());
   //for (size_t i = 0; i < cloud_output_subsampled_.points.size (); ++i)
-  //  cloud_output_subsampled_xyz->points.push_back ( pcl::PointXYZ (cloud_output_subsampled_.points[i].x, cloud_output_subsampled_.points[i].y, cloud_output_subsampled_.points[i].z));
+  //  cloud_output_subsampled_xyz->points.push_back ( XYZType (cloud_output_subsampled_.points[i].x, cloud_output_subsampled_.points[i].y, cloud_output_subsampled_.points[i].z));
   mat_ = ppf_registration_.getFinalTransformation ();
-  std::vector < pcl::Correspondences > cor_tmp;
+  std::vector <pcl::Correspondences> cor_tmp;
 
   std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix<float, 4, 4, 0, 4, 4>>>mat_tmp;
   mat_tmp.push_back (mat_);
@@ -84,18 +84,18 @@ Ppfe::GetSceneKeypoints ()
 }
 
 pcl::PointCloud<pcl::PointNormal>::Ptr
-SubsampleAndCalculateNormals (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
+SubsampleAndCalculateNormals (pcl::PointCloud<XYZType>::Ptr cloud)
 {
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_subsampled (new pcl::PointCloud<pcl::PointXYZ> ());
-  pcl::VoxelGrid < pcl::PointXYZ > subsampling_filter;
+  pcl::PointCloud<XYZType>::Ptr cloud_subsampled (new pcl::PointCloud<XYZType> ());
+  pcl::VoxelGrid <XYZType> subsampling_filter;
   subsampling_filter.setInputCloud (cloud);
   subsampling_filter.setLeafSize (SUBSAMPLING_LEAF_SIZE);
   subsampling_filter.filter (*cloud_subsampled);
 
-  pcl::PointCloud<pcl::Normal>::Ptr cloud_subsampled_normals (new pcl::PointCloud<pcl::Normal> ());
-  pcl::NormalEstimationOMP < pcl::PointXYZ, pcl::Normal > normal_estimation_filter;
+  pcl::PointCloud<NormalType>::Ptr cloud_subsampled_normals (new pcl::PointCloud<NormalType> ());
+  pcl::NormalEstimationOMP <XYZType, NormalType > normal_estimation_filter;
   normal_estimation_filter.setInputCloud (cloud_subsampled);
-  pcl::search::KdTree<pcl::PointXYZ>::Ptr search_tree (new pcl::search::KdTree<pcl::PointXYZ>);
+  pcl::search::KdTree<XYZType>::Ptr search_tree (new pcl::search::KdTree<XYZType>);
   normal_estimation_filter.setSearchMethod (search_tree);
   normal_estimation_filter.setRadiusSearch (normal_estimation_search_radius);
   normal_estimation_filter.compute (*cloud_subsampled_normals);

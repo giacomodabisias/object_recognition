@@ -39,7 +39,7 @@ ColorSampling::Clear ()
 }
 
 void
-ColorSampling::AddCloud (const pcl::PointCloud<pcl::PointXYZRGB> &cloud)
+ColorSampling::AddCloud (const pcl::PointCloud<PointType> &cloud)
 {
   Clear ();
   float u, v;
@@ -54,7 +54,7 @@ ColorSampling::AddCloud (const pcl::PointCloud<pcl::PointXYZRGB> &cloud)
 }
 
 void
-ColorSampling::ColorSampling::FilterPointCloud (const pcl::PointCloud<pcl::PointXYZRGB> &in_cloud, pcl::PointCloud<pcl::PointXYZRGB> &out_cloud)
+ColorSampling::ColorSampling::FilterPointCloud (const pcl::PointCloud<PointType> &in_cloud, pcl::PointCloud<PointType> &out_cloud)
 {
   pcl::PointCloud < pcl::PointXYZRGB > cloud;
   int points = in_cloud.points.size ();
@@ -79,7 +79,7 @@ Eigen::Matrix3f rgb2yuv;
 float avg_u_, avg_v_;
 
 bool
-ColorSampling::ToFilter (const pcl::PointXYZRGB &point)
+ColorSampling::ToFilter (const PointType &point)
 {
   float u, v;
   RGBtoYUV (point, u, v);
@@ -91,7 +91,7 @@ ColorSampling::ToFilter (const pcl::PointXYZRGB &point)
 }
 
 void
-ColorSampling::RGBtoYUV (const pcl::PointXYZRGB &point, float &u, float &v)
+ColorSampling::RGBtoYUV (const PointType &point, float &u, float &v)
 {
   Eigen::Vector3f rgb ((float) point.r / 255, (float) point.g / 255, (float) point.b / 255);
   Eigen::Vector3f yuv = rgb2yuv * rgb;

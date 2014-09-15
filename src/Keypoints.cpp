@@ -35,7 +35,7 @@ Narf::GetKeypoints (pcl::PointCloud<PointType>::Ptr cloud, pcl::PointCloud<Point
 
 
 Sift::Sift () :
-    tree_ (new pcl::search::KdTree<pcl::PointXYZRGB> ())
+    tree_ (new pcl::search::KdTree<PointType> ())
 {
   sift_.setSearchMethod (tree_);
   sift_.setScales (min_scale, n_octaves, n_scales_per_octave);
@@ -53,7 +53,7 @@ Sift::GetKeypoints (pcl::PointCloud<PointType>::Ptr cloud, pcl::PointCloud<Point
 
 
 Harris::Harris () :
-    harris3D_ (new pcl::HarrisKeypoint3D<PointType, pcl::PointXYZI> (pcl::HarrisKeypoint3D<PointType, pcl::PointXYZI>::HARRIS))
+    harris3D_ (new pcl::HarrisKeypoint3D<PointType, XYZIType> (pcl::HarrisKeypoint3D<PointType, XYZIType>::HARRIS))
 {
   harris3D_->setNonMaxSupression (true);
   harris3D_->setRadius (0.03);
@@ -61,19 +61,19 @@ Harris::Harris () :
   switch (harris_type)
   {
     default:
-      harris3D_->setMethod (pcl::HarrisKeypoint3D<pcl::PointXYZRGB, pcl::PointXYZI>::HARRIS);
+      harris3D_->setMethod (pcl::HarrisKeypoint3D<PointType, XYZIType>::HARRIS);
       break;
     case 2:
-      harris3D_->setMethod (pcl::HarrisKeypoint3D<pcl::PointXYZRGB, pcl::PointXYZI>::NOBLE);
+      harris3D_->setMethod (pcl::HarrisKeypoint3D<PointType, XYZIType>::NOBLE);
       break;
     case 3:
-      harris3D_->setMethod (pcl::HarrisKeypoint3D<pcl::PointXYZRGB, pcl::PointXYZI>::LOWE);
+      harris3D_->setMethod (pcl::HarrisKeypoint3D<PointType, XYZIType>::LOWE);
       break;
     case 4:
-      harris3D_->setMethod (pcl::HarrisKeypoint3D<pcl::PointXYZRGB, pcl::PointXYZI>::TOMASI);
+      harris3D_->setMethod (pcl::HarrisKeypoint3D<PointType, XYZIType>::TOMASI);
       break;
     case 5:
-      harris3D_->setMethod (pcl::HarrisKeypoint3D<pcl::PointXYZRGB, pcl::PointXYZI>::CURVATURE);
+      harris3D_->setMethod (pcl::HarrisKeypoint3D<PointType, XYZIType>::CURVATURE);
       break;
   }
 }
@@ -82,7 +82,7 @@ void
 Harris::GetKeypoints (pcl::PointCloud<PointType>::Ptr cloud, pcl::PointCloud<PointType>::Ptr cloud_keypoints)
 {
   harris3D_->setInputCloud (cloud);
-  pcl::PointCloud<pcl::PointXYZI>::Ptr keypoints_temp (new pcl::PointCloud<pcl::PointXYZI>);
+  pcl::PointCloud<XYZIType>::Ptr keypoints_temp (new pcl::PointCloud<XYZIType>);
   harris3D_->compute (*keypoints_temp);
   copyPointCloud (*keypoints_temp, *cloud_keypoints);
 }

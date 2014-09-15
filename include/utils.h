@@ -29,7 +29,7 @@ SetViewPoint (pcl::PointCloud<PointType>::Ptr cloud)
 }
 
 //Load the input models and returns a list of point clouds
-std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>
+std::vector<pcl::PointCloud<PointType>::Ptr>
 ReadModels (char** argv, std::vector<float>& filters, std::vector<int>& icp_iterations);
 
 //Prints the transformation matrix and traslation vector

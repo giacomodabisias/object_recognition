@@ -25,25 +25,25 @@ class ColorSampling
     Clear ();
 
     void
-    AddCloud (const pcl::PointCloud<pcl::PointXYZRGB> &cloud);
+    AddCloud (const pcl::PointCloud<PointType> &cloud);
 
     void
-    FilterPointCloud (const pcl::PointCloud<pcl::PointXYZRGB> &in_cloud, pcl::PointCloud<pcl::PointXYZRGB> &out_cloud);
+    FilterPointCloud (const pcl::PointCloud<PointType> &in_cloud, pcl::PointCloud<PointType> &out_cloud);
 
     void
     PrintColorInfo ();
 
     bool
-    ToFilter (const pcl::PointXYZRGB &point);
+    ToFilter (const PointType &point);
 
     void
-    RGBtoYUV (const pcl::PointXYZRGB &point, float &u, float &v);
+    RGBtoYUV (const PointType &point, float &u, float &v);
 };
 
 class DownSampler
 {
   public:
-    pcl::VoxelGrid<pcl::PointXYZRGB> down_sampler_;
+    pcl::VoxelGrid<PointType> down_sampler_;
 
     DownSampler ();
     DownSampler (float x, float y, float z);

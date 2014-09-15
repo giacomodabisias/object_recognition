@@ -9,8 +9,9 @@
 #include <pcl/features/ppf.h>
 #include <pcl/features/pfhrgb.h>
 #include <pcl/features/pfh.h>
-#include <pcl/features/impl/ppfrgb.hpp>
+//#include <pcl/features/impl/ppfrgb.hpp>
 #include <pcl/features/shot_omp.h>
+
 
 
 template <class T>
@@ -63,14 +64,14 @@ class KeyDes
     bool created_;
 
     KeyDes (P::Ptr model, P::Ptr model_keypoints, P::Ptr scene, P::Ptr scene_keypoints, PN::Ptr model_normals, PN::Ptr scene_normals) :
-        model_descriptors_ (new PD ()), scene_descriptors_ (new PD ()), model_ (model), model_keypoints_ (model_keypoints), scene_ (scene), scene_keypoints_ (scene_keypoints), model_normals_ (model_normals), scene_normals_ (scene_normals), created_ (false)
+        model_descriptors_ (new PD ()), scene_descriptors_ (new PD ()), model_ (model), model_keypoints_ (model_keypoints), scene_ (scene),
+        scene_keypoints_ (scene_keypoints), model_normals_ (model_normals), scene_normals_ (scene_normals), created_ (false)
     {
     }
 
     pcl::CorrespondencesPtr
     Run ()
     {
-
       pcl::CorrespondencesPtr model_scene_corrs (new pcl::Correspondences ());
 
       //create scene descriptors
@@ -99,7 +100,6 @@ class KeyDes
       }
 
       return (MatchDescriptors<T>(scene_descriptors_, model_descriptors_));
-
     }
 };
 
