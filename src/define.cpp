@@ -56,3 +56,5 @@ bool use_generalized_icp(false);
 bool reg(false);
 bool _3dsc(false);
 bool usc(false);
+bool spin(false);
+bool rift(false);

@@ -124,11 +124,13 @@ ParseCommandLine (int argc, char *argv[])
     else if (used_descriptors.compare ("fpfh") == 0)
       fpfh = true;
     else if (used_descriptors.compare ("ppf") == 0)
-      ppf = true;/*
-    else if (used_descriptors.compare ("3dsc") == 0)        // ToFix the normal number differs from the keypoint number
-      _3dsc = true;*/
-    else if(used_descriptors.compare("usc") == 0)
+      ppf = true;
+    else if (used_descriptors.compare ("3dsc") == 0)        
+      _3dsc = true;                                         
+    else if(used_descriptors.compare("usc") == 0)          
       usc = true;
+    else if(used_descriptors.compare("spin") == 0)
+      spin = true;
     else if (used_descriptors.compare ("ppfrgb") == 0)
       ppfrgb = true;
     else if (used_descriptors.compare ("pfh") == 0)
