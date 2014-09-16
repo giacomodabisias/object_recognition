@@ -17,9 +17,9 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   Sift * sift_estimator;
   Harris * harris_estimator;
   ColorSampling *filter;
-  pcl::RandomSample <PointType> * random;
-  pcl::StatisticalOutlierRemoval <PointType> *sor;
-  Ransac < pcl::SampleConsensusModelSphere <PointType>> * ransac_estimator;
+  pcl::RandomSample < PointType > * random;
+  pcl::StatisticalOutlierRemoval < PointType > *sor;
+  Ransac < pcl::SampleConsensusModelSphere < PointType >> * ransac_estimator;
   Ppfe *ppfe_estimator;
   Hough * hough;
   GCG * gcg;
@@ -37,7 +37,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
   // Remove outliers to clean the scene from sparse points
   if (remove_outliers)
   {
-    sor = new pcl::StatisticalOutlierRemoval <PointType>();
+    sor = new pcl::StatisticalOutlierRemoval < PointType >();
     sor->setMeanK (50);
     sor->setStddevMulThresh (0.5);
   }
@@ -54,7 +54,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
     model_normals = norm.GetNormals (model);
     if (random_points)
     {
-      random = new pcl::RandomSample <PointType>();
+      random = new pcl::RandomSample < PointType >();
       random->setInputCloud (model);
       random->setSeed (std::rand ());
       random->setSample (random_model_samples);
@@ -123,7 +123,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       {
         // RANSAC
         std::cout << "finding ransac keypoints..." << std::endl;
-        ransac_estimator = new Ransac < pcl::SampleConsensusModelSphere<PointType>>();
+        ransac_estimator = new Ransac < pcl::SampleConsensusModelSphere < PointType >>();
         ransac_estimator->GetKeypoints (scene, scene_keypoints);
       }
       else if (harris)
@@ -156,31 +156,31 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
       if (fpfh)
       {
         std::cout << "using fpfh descriptors" << std::endl;
-        KeyDes<pcl::FPFHSignature33, pcl::FPFHEstimationOMP<PointType, NormalType, pcl::FPFHSignature33> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        KeyDes<pcl::FPFHSignature33, pcl::FPFHEstimationOMP<pcl::PointXYZRGB, pcl::Normal, pcl::FPFHSignature33> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
         model_scene_corrs = est.Run ();
       }
       else if (pfh)
       {
         std::cout << "using pfh descriptors" << std::endl;
-        KeyDes<pcl::PFHSignature125, pcl::PFHEstimation<PointType, NormalType, pcl::PFHSignature125> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        KeyDes<pcl::PFHSignature125, pcl::PFHEstimation<pcl::PointXYZRGB, pcl::Normal, pcl::PFHSignature125> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
         model_scene_corrs = est.Run ();
       }
       else if (pfhrgb)
       {
         std::cout << "using pfhrgb descriptors" << std::endl;
-        KeyDes<pcl::PFHRGBSignature250, pcl::PFHRGBEstimation<PointType, NormalType, pcl::PFHRGBSignature250> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        KeyDes<pcl::PFHRGBSignature250, pcl::PFHRGBEstimation<pcl::PointXYZRGB, pcl::Normal, pcl::PFHRGBSignature250> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
         model_scene_corrs = est.Run ();
       }
       else if (ppf)
       {
         std::cout << "using ppf descriptors" << std::endl;
-        KeyDes<pcl::PPFSignature, pcl::PPFEstimation<PointType, NormalType, pcl::PPFSignature> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        KeyDes<pcl::PPFSignature, pcl::PPFEstimation<pcl::PointXYZRGB, pcl::Normal, pcl::PPFSignature> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
         model_scene_corrs = est.Run ();
       }
       else if (ppfrgb)
       {
         std::cout << "using ppfrgb descriptors" << std::endl;
-        KeyDes<pcl::PPFRGBSignature, pcl::PPFRGBEstimation<PointType, NormalType, pcl::PPFRGBSignature> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
+        KeyDes<pcl::PPFRGBSignature, pcl::PPFRGBEstimation<pcl::PointXYZRGB, pcl::Normal, pcl::PPFRGBSignature> > est (model, model_keypoints, scene, scene_keypoints, model_normals, scene_normals);
         model_scene_corrs = est.Run ();
       }
       else if (shot)
@@ -214,46 +214,42 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         model_scene_corrs = est.run ();
       }*/
   
+
       // Clustering the results and estimating an initial pose
-      if(model_scene_corrs->size() > 0){
-        std::cout << "Starting to cluster..." << std::endl;
-        if (use_hough)
-        {
-          // Hough3D
-          cluster = hough->GetClusters ( scene, scene_keypoints, scene_normals, model_scene_corrs);
-        }
-        else
-        {
-          // Geometric Consistency
-          cluster = gcg->GetClusters (model, scene, model_scene_corrs);
-        }
-        std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
-      
-        if(std::get < 0 > (cluster).size () > 0){
-            clock_gettime(CLOCK_MONOTONIC, &finish);
-            elapsed = (finish.tv_sec - start.tv_sec);
-            elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-            if(use_icp){
-                pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
-                std::cout << "\t USING ICP"<<std::endl;
-                pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
-           
-                Eigen::Matrix4f tmp = Eigen::Matrix4f::Identity();
-                for(int i = 0; i< icp_iteration; ++i){
-                //while(!icp.HasConverged()){
-                  icp.Align (rotated_model, original_scene);
-                  tmp = icp.transformation_ * tmp;  
-                }
-                std::get < 0 > (cluster)[0] =  tmp * std::get < 0 > (cluster)[0];
-                
-                if(error_log)
-                    e.WriteError(icp.transformation_, icp.fitness_score_, id, elapsed, frame_index);
-              }
-          found_models[id] = cluster; 
-        }
+      std::cout << "Starting to cluster..." << std::endl;
+      if (use_hough)
+      {
+        // Hough3D
+        cluster = hough->GetClusters ( scene, scene_keypoints, scene_normals, model_scene_corrs);
       }
       else
-        std::cout << "No correspondences found" << std::endl;
+      {
+        // Geometric Consistency
+        cluster = gcg->GetClusters (model, scene, model_scene_corrs);
+      }
+    }
+    std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
+    if(std::get < 0 > (cluster).size () > 0){
+        clock_gettime(CLOCK_MONOTONIC, &finish);
+        elapsed = (finish.tv_sec - start.tv_sec);
+        elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+        if(use_icp){
+            pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
+            std::cout << "\t USING ICP"<<std::endl;
+            pcl::transformPointCloud (*model, *rotated_model, (std::get < 0 > (cluster)[0]));
+       
+            Eigen::Matrix4f tmp = Eigen::Matrix4f::Identity();
+            for(int i = 0; i< icp_iteration; ++i){
+            //while(!icp.HasConverged()){
+              icp.Align (rotated_model, original_scene);
+              tmp = icp.transformation_ * tmp;  
+            }
+            std::get < 0 > (cluster)[0] =  tmp * std::get < 0 > (cluster)[0];
+            
+            if(error_log)
+                e.WriteError(icp.transformation_, icp.fitness_score_, id, elapsed, frame_index);
+          }
+      found_models[id] = cluster; 
     }
     s.Notify2main();
     s.Wait4main();
