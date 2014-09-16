@@ -59,6 +59,36 @@ Usc::run()
   
   return (MatchDescriptors<SHAPE>(scene_descriptors_, model_descriptors_));
 }
+/*
+Spin::Spin (PCP model_keypoints, PCP scene_keypoints, PCNP model_normals, PCNP scene_normals) :
+      model_descriptors_ (new PCS ()), scene_descriptors_ (new PCS()), model_keypoints_ (model_keypoints),
+      scene_keypoints_ (scene_keypoints), model_normals_ (model_normals), scene_normals_ (scene_normals),
+      created_ (false), kdtree_(new KDT())
+{
+  si_.setRadiusSearch(0.02);
+  si_.setImageWidth(8);
+}
+
+pcl::CorrespondencesPtr
+Spin::run()
+{
+  pcl::CorrespondencesPtr model_scene_corrs (new pcl::Correspondences ());
+
+  if (!created_)
+  {
+    //create model descriptors
+    std::cout << "calculating model descriptors " << std::endl;
+    si_.setInputCloud (model_keypoints_);
+    si_.setInputNormals (model_normals_);
+    si_.compute (*model_descriptors_);
+   created_ = true;
+  }
+  si_.setInputCloud(scene_keypoints_);
+  si_.setInputNormals(scene_normals_);
+  si_.compute(*scene_descriptors_);
+
+  return (MatchDescriptors<SPIN>(scene_descriptors_, model_descriptors_));
+}
 
 Rift::Rift (PCP model_keypoints, PCP scene_keypoints, PCNP model_normals, PCNP scene_normals) :
       model_descriptors_ (new PCR), scene_descriptors_ (new PCR), model_keypoints_ (model_keypoints),
@@ -102,3 +132,4 @@ Rift::run()
 
   return (MatchDescriptors<RIFT>(scene_descriptors_, model_descriptors_));
 }
+*/

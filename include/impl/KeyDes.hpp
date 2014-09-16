@@ -9,7 +9,7 @@
 #include <pcl/features/ppf.h>
 #include <pcl/features/pfhrgb.h>
 #include <pcl/features/pfh.h>
-//#include <pcl/features/impl/ppfrgb.hpp>
+#include <pcl/features/impl/ppfrgb.hpp>
 #include <pcl/features/shot_omp.h>
 
 

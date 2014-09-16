@@ -55,7 +55,7 @@ public:
     run();
 
 };
-
+/*
 class Spin
 {
 public:
@@ -114,3 +114,4 @@ public:
     pcl::CorrespondencesPtr
     run();
 };
+*/

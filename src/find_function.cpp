@@ -200,7 +200,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         std::cout << "using usc descriptors" << std::endl;
         Usc est (model_keypoints, scene_keypoints);
         model_scene_corrs = est.run ();
-      }
+      }/*
       else if (spin)
       {
         std::cout << "using spin descriptors" << std::endl;
@@ -212,7 +212,7 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
         std::cout << "using rift descriptors" << std::endl;
         Rift est (model_keypoints, scene_keypoints, model_normals, scene_normals);           
         model_scene_corrs = est.run ();
-      }
+      }*/
   
       // Clustering the results and estimating an initial pose
       if(model_scene_corrs->size() > 0){
