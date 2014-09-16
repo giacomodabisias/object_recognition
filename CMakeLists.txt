@@ -120,6 +120,6 @@ include_directories(${GRABBER_PATH})
 include_directories(${IMPL_PATH})
 
 
-  add_executable (pcl_multi_object_recognition pcl_multi_object_recognition.cpp  ${SOURCE_PATH}/Visualizer.cpp  ${SOURCE_PATH}/Cluster.cpp ${SOURCE_PATH}/Keypoints.cpp ${SOURCE_PATH}/Sampling.cpp ${SOURCE_PATH}/Icp.cpp  ${SOURCE_PATH}/Ppfe.cpp ${SOURCE_PATH}/OpenniStreamer.cpp ${SOURCE_PATH}/Error.cpp ${SOURCE_PATH}/find_function.cpp ${SOURCE_PATH}/define.cpp ${SOURCE_PATH}/help.cpp ${SOURCE_PATH}/utils.cpp ${GRABBER_PATH}/registration.cpp)
+  add_executable (pcl_multi_object_recognition pcl_multi_object_recognition.cpp  ${SOURCE_PATH}/Visualizer.cpp  ${SOURCE_PATH}/Cluster.cpp ${SOURCE_PATH}/Keypoints.cpp ${SOURCE_PATH}/Sampling.cpp ${SOURCE_PATH}/Icp.cpp  ${SOURCE_PATH}/Ppfe.cpp ${SOURCE_PATH}/OpenniStreamer.cpp ${SOURCE_PATH}/Error.cpp ${SOURCE_PATH}/find_function.cpp ${SOURCE_PATH}/define.cpp ${SOURCE_PATH}/help.cpp ${SOURCE_PATH}/utils.cpp ${SOURCE_PATH}/KeyDes.cpp ${GRABBER_PATH}/registration.cpp)
 
 target_link_libraries( pcl_multi_object_recognition  ${OPENNI_LIBRARY} ${PCL_LIBRARIES} ${Freenect_LIBRARY} )
