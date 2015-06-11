@@ -1,8 +1,7 @@
-#ifndef HELP_H
-#define HELP_H
+#ifndef OBJECT_RECOGNITION_HELP_H
+#define OBJECT_RECOGNITION_HELP_H
 
 #include <iostream>
-#include "define.h"
 #include <pcl/console/parse.h>
 
 

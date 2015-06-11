@@ -1,5 +1,5 @@
-#ifndef DEFINE_H
-#define DEFINE_H
+#ifndef OBJECT_RECOGNITION_DEFINE_H
+#define OBJECT_RECOGNITION_DEFINE_H
 
 #include <pcl/features/board.h>
 #include <pcl/impl/point_types.hpp>

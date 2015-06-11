@@ -1,3 +1,6 @@
+#ifndef OBJECT_RECOGNITION_SEMAPHORE
+#define OBJECT_RECOGNITION_SEMAPHORE
+
 #include <mutex>
 #include <condition_variable>
 
@@ -56,3 +59,5 @@ public:
 	}
 
 };
+
+#endif // OBJECT_RECOGNITION_SEMAPHORE

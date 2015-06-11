@@ -106,7 +106,8 @@ KeyboardEventOccurred (const pcl::visualization::KeyboardEvent &event)
 std::vector<pcl::PointCloud<PointType>::Ptr>
 ReadModels (char** argv, std::vector<float>& filters, std::vector<int>& icp_iterations)
 {
-  pcl::PCDReader reader;
+  pcl::PCDReader pcdReader;
+  pcl::PLYReader plyReader;
   char name[512];
   float filter;
   int icp_iteration;
@@ -129,7 +130,10 @@ ReadModels (char** argv, std::vector<float>& filters, std::vector<int>& icp_iter
       if (std::strlen (name) > 2)
       {
         pcl::PointCloud<PointType>::Ptr cloud (new pcl::PointCloud<PointType> ());
-        reader.read (name, *cloud);
+        int ret = pcdReader.read (name, *cloud);
+        if (ret == -1) {
+          plyReader.read(name,*cloud);
+        }
         ///SetViewPoint(cloud);
         cloud_models.push_back (cloud);
         PCL_INFO ("Model read: %s\n", name);

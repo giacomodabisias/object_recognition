@@ -1,4 +1,5 @@
 #include "help.h"
+#include "define.h"
 
 void
 ShowHelp (char *file_name)
@@ -57,7 +58,7 @@ void
 ParseCommandLine (int argc, char *argv[])
 {
   //Show help
-  if (pcl::console::find_switch (argc, argv, "-h"))
+  if (pcl::console::find_switch (argc, argv, "-h") || argc <= 1)
   {
     ShowHelp (argv[0]);
     exit (0);

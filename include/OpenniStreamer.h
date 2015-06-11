@@ -3,7 +3,7 @@
 
 #include <pcl/filters/passthrough.h>
 #include "openni2_grabber.hpp"
-#include "pcl/io/oni_grabber.h"
+#include "pcl/io/openni2_grabber.h"
 #include "define.h"
 #include "OpenNI.h"
 
