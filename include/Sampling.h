@@ -1,5 +1,5 @@
 #ifndef SAMPLING_H
-#define SAMPLINH_H
+#define SAMPLING_H
 
 #include "define.h"
 #include <pcl/filters/voxel_grid.h>

@@ -1,12 +1,16 @@
-#ifndef UTILS_H
-#define UTILS_H
-#include "help.h"
+#ifndef OBJECT_RECOGNITION_UTILS_H
+#define OBJECT_RECOGNITION_UTILS_H
 #include <pcl/visualization/keyboard_event.h>
 //#include <pcl/features/normal_3d_omp.h>
 #include <pcl/features/normal_3d.h>
+#include <pcl/point_cloud.h>
 #include <iostream>
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 #include <sstream>
+
+#include "help.h"
+#include "define.h"
 
 //Returns the frobenious norm of the input matrix
 double 

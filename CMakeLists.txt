@@ -77,8 +77,8 @@ endif (LIBUSB_1_LIBRARIES AND LIBUSB_1_INCLUDE_DIRS)
 #######
 
 #######find openni2
-  find_path(OPENNI2_INCLUDE_DIRS NAMES OpenNI.h)
-  find_library(OPENNI_LIBRARY NAMES OpenNI2 libOpenNI2 )
+  find_path(OPENNI2_INCLUDE_DIRS NAMES OpenNI.h HINTS /usr/local/include/ni2)
+  find_library(OPENNI_LIBRARY NAMES OpenNI2 libOpenNI2 HINTS /usr/local/lib/ni2 )
   include_directories(${OPENNI2_INCLUDE_DIRS})
 #######
 

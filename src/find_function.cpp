@@ -1,5 +1,18 @@
 #include "find_function.h"
 
+#include "Visualizer.h"
+#include "define.h"
+#include "Sampling.h"
+#include "Ppfe.h"
+#include "KeyDes.h"
+#include "KeyPoints.h"
+#include "Cluster.h"
+#include <pcl/filters/statistical_outlier_removal.h>
+#include "Semaphore.h"
+#include <thread>
+#include "Icp.h"
+
+
 void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCloud<PointType>::Ptr&  original_scene, Semaphore& s, 
                  std::vector<ClusterType>& found_models,const int id, const float filter_intensity, const int icp_iteration,  ErrorWriter & e, const int & frame_index) {
 
@@ -73,7 +86,9 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
 
   // Start the main object recognition loop
   while (!s.ToStop()){
-    clock_gettime(CLOCK_MONOTONIC, &start); 
+#ifndef __APPLE__
+    clock_gettime(CLOCK_MONOTONIC, &start);
+#endif // __APPLE
     copyPointCloud (*original_scene, *scene);
 
     // Delete the main plane to reduce the number of points in the scene point cloud
@@ -230,9 +245,11 @@ void FindObject (const pcl::PointCloud<PointType>::Ptr model, const pcl::PointCl
     }
     std::cout << "\tFound " << std::get < 0 > (cluster).size () << " model instance/instances " << std::endl;
     if(std::get < 0 > (cluster).size () > 0){
+#ifndef __APPLE__
         clock_gettime(CLOCK_MONOTONIC, &finish);
         elapsed = (finish.tv_sec - start.tv_sec);
         elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+#endif // __APPLE__
         if(use_icp){
             pcl::PointCloud<PointType>::Ptr rotated_model (new pcl::PointCloud<PointType> ());
             std::cout << "\t USING ICP"<<std::endl;

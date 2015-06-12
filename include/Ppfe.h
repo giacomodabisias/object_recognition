@@ -1,12 +1,13 @@
-#ifndef PPFE_H
-#define PPFE_H
+#ifndef OBJECT_RECOGNITION_PPFE_H
+#define OBJECT_RECOGNITION_PPFE_H
 
-#include "define.h"
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/features/normal_3d_omp.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/registration/ppf_registration.h>
 #include <pcl/filters/extract_indices.h>
+
+#include "define.h"
 
 class Ppfe
 {

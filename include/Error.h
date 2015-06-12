@@ -1,5 +1,5 @@
-#ifndef ERROR_H
-#define ERROR_H
+#ifndef OBJECT_RECOGNITION_ERROR_H
+#define OBJECT_RECOGNITION_ERROR_H
 #include "utils.h"
 #include <mutex>
 

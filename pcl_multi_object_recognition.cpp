@@ -1,6 +1,8 @@
+#include <thread>
+
 #include "find_function.h"
 #include "OpenniStreamer.h"
-
+#include "Visualizer.h"
 
 
 
